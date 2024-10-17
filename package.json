@@ -1,0 +1,48 @@
+{
+  "name": "project-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:strict": "next lint --max-warnings 0",
+    "format:check": "prettier . --check",
+    "format:write": "prettier -w . && eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "check": "yarn lint type-check",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "next": "14.2.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.3.0",
+    "tailwind-merge": "^2.5.4"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@next/eslint-plugin-next": "^14.2.4",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "8",
+    "eslint-config-next": "14.2.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "3.0.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "postcss": "^8",
+    "prettier": "^3.3.2",
+    "prettier-plugin-tailwindcss": "^0.6.5",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
