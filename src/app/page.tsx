@@ -30,7 +30,7 @@ export default function Index() {
 
         <div className={cn("flex justify-center items-center flex-col gap-y-10 mt-12")}>
           <Link
-            href="/"
+            href="/home"
             className={cn(
               "h-12 w-60 bg-gradient-to-r from-main to-secondary rounded-lg [box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]",
               "text-white font-lexend text-lg flex justify-center items-center"
