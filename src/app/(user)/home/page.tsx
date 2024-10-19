@@ -1,136 +1,174 @@
-'use client'
+'use client';
 
 import Image from 'next/image';
-import React, { useState } from 'react';
-import { FaWarehouse } from "react-icons/fa";
+import React, { useEffect, useState } from 'react';
+import { FaWarehouse } from 'react-icons/fa';
 
 import SearchInput from '../../../../components/user/SearchInput';
 import { cn } from '../../../../utils/lib/cn';
-
-const items = Array(20).fill({
-  name: "Nama Barang",
-  location: "Gudang ATK",
-  image: "/images/pulpen.png"
-});
-
-const storages = [
-  { name: "Gudang ATK", location: "TSO Manyar" },
-  { name: "Gudang Merch", location: "TSO Manyar" },
-  { name: "Gudang 3", location: "TSO Manyar" },
-  { name: "Gudang 4", location: "TSO Manyar" },
-  { name: "Gudang 5", location: "TSO Manyar" },
-  { name: "Gudang 6", location: "TSO Manyar" }
-];
+import { Item, Storage } from '../../../../utils/types/api';
 
 export default function Home() {
-  // State to store search input values
   const [itemSearch, setItemSearch] = useState('');
   const [storageSearch, setStorageSearch] = useState('');
 
-  const filteredItems = items.filter(item =>
-    item.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
-    item.location.toLowerCase().includes(itemSearch.toLowerCase())
+  const [items, setItems] = useState<Item[]>([]);
+  const [storages, setStorages] = useState<Storage[]>([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const [itemsResponse, storagesResponse] = await Promise.all([
+          fetch('http://localhost:8080/api/items'),
+          fetch('http://localhost:8080/api/storages'),
+        ]);
+
+        if (!itemsResponse.ok || !storagesResponse.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const itemsData: Item[] = await itemsResponse.json();
+        const storagesData: Storage[] = await storagesResponse.json();
+
+        setItems(itemsData);
+        setStorages(storagesData);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : 'Unknown error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredItems = items.filter(
+    (item) =>
+      item.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
+      storages
+        .find((storage) => storage.id === item.storageId)
+        ?.name.toLowerCase()
+        .includes(itemSearch.toLowerCase()),
   );
 
-  const filteredStorages = storages.filter(storage =>
-    storage.name.toLowerCase().includes(storageSearch.toLowerCase()) ||
-    storage.location.toLowerCase().includes(storageSearch.toLowerCase())
+  const filteredStorages = storages.filter((storage) =>
+    storage.name.toLowerCase().includes(storageSearch.toLowerCase()),
   );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <main>
       <SearchInput
-        placeholder="Cari Barang"
+        placeholder='Cari Barang'
         value={itemSearch}
         onChange={(e) => setItemSearch(e.target.value)}
       />
 
-      <div className={cn(
-        "mt-6 rounded-lg h-[23rem] w-[80rem] relative flex justify-center",
-      )}>
-        <div className={cn(
-          "absolute inset-0 bg-white rounded-lg opacity-50",
-          "z-[-1]"
-        )}></div>
+      <div
+        className={cn(
+          'relative mt-6 flex h-[23rem] w-[80rem] justify-center rounded-lg',
+        )}
+      >
+        <div
+          className={cn(
+            'absolute inset-0 rounded-lg bg-white opacity-50',
+            'z-[-1]',
+          )}
+        ></div>
 
-        <div className={cn(
-          "p-4 h-full overflow-auto",
-          "grid grid-cols-7 gap-5",
-        )}>
+        <div
+          className={cn('h-full overflow-auto p-4', 'grid grid-cols-7 gap-5')}
+        >
           {filteredItems.length > 0 ? (
             filteredItems.map((item, index) => (
-              <div key={index} className={cn(
-                "rounded-lg h-40 w-40",
-                "bg-gradient-to-b from-main to-secondary flex flex-col justify-center items-center",
-              )}>
+              <div
+                key={index}
+                className={cn(
+                  'h-40 w-40 rounded-lg',
+                  'flex flex-col items-center justify-center bg-gradient-to-b from-main to-secondary',
+                )}
+              >
                 <Image
-                  src={item.image}
+                  src='/images/pulpen.png'
                   width={100}
                   height={100}
                   alt={item.name}
                 />
 
-                <p className={cn("font-lexend font-bold")}>
-                  {item.name}
-                </p>
+                <p className={cn('font-lexend font-bold')}>{item.name}</p>
 
-                <p className={cn("font-lexend text-sm")}>
-                  {item.location}
-                </p>
+                <p className={cn('font-lexend text-sm')}>Gudang ATK</p>
               </div>
             ))
           ) : (
-            <p className={cn("text-center col-span-7")}>No items found</p>
+            <p className={cn('col-span-7 text-center')}>No items found</p>
           )}
         </div>
       </div>
 
-      <div className={cn("flex justify-between mt-6")}>
-        <p className={cn("font-lexend font-bold text-3xl")}>
-          TSO MANYAR
-        </p>
+      <div className={cn('mt-6 flex justify-between')}>
+        <p className={cn('font-lexend text-3xl font-bold')}>TSO MANYAR</p>
 
         <SearchInput
-          placeholder="Cari Gudang"
+          placeholder='Cari Gudang'
           value={storageSearch}
           onChange={(e) => setStorageSearch(e.target.value)}
-          containerStyles="w-[66rem]"
+          containerStyles='w-[66rem]'
         />
       </div>
 
-      <div className={cn(
-        "mt-6 rounded-lg h-[12rem] w-[80rem] relative flex justify-center",
-      )}>
-        <div className={cn(
-          "absolute inset-0 bg-white rounded-lg opacity-50",
-          "z-[-1]"
-        )}></div>
+      <div
+        className={cn(
+          'relative mt-6 flex h-[12rem] w-[80rem] justify-center rounded-lg',
+        )}
+      >
+        <div
+          className={cn(
+            'absolute inset-0 rounded-lg bg-white opacity-50',
+            'z-[-1]',
+          )}
+        ></div>
 
-        <div className={cn(
-          "p-4 h-full overflow-auto",
-          "grid grid-cols-4 gap-y-6 gap-x-8",
-        )}>
+        <div
+          className={cn(
+            'h-full overflow-auto p-4',
+            'grid grid-cols-4 gap-x-8 gap-y-6',
+          )}
+        >
           {filteredStorages.length > 0 ? (
             filteredStorages.map((item, index) => (
-              <div key={index} className={cn(
-                "rounded-lg h-32 w-72",
-                "bg-gradient-to-b from-main to-secondary flex justify-center items-center",
-              )}>
+              <div
+                key={index}
+                className={cn(
+                  'h-32 w-72 rounded-lg',
+                  'flex items-center justify-center bg-gradient-to-b from-main to-secondary',
+                )}
+              >
                 <FaWarehouse size={56} />
 
-                <div className={cn("mx-4")}>
-                  <p className={cn("font-lexend font-bold text-xl")}>
+                <div className={cn('mx-4')}>
+                  <p className={cn('font-lexend text-xl font-bold')}>
                     {item.name}
                   </p>
 
-                  <p className={cn("font-lexend")}>
-                    {item.location}
-                  </p>
+                  <p className={cn('font-lexend')}>Gudang ATK</p>
                 </div>
               </div>
             ))
           ) : (
-            <p className={cn("text-center col-span-4")}>No storages found</p>
+            <p className={cn('col-span-4 text-center')}>No storages found</p>
           )}
         </div>
       </div>
