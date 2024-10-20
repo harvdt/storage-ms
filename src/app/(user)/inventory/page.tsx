@@ -13,7 +13,7 @@ export default function Inventory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [items, setItems] = useState<Item[]>([]);
-  const [storages, setStorages] = useState<Storage[]>([]);
+  const [_storages, setStorages] = useState<Storage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
