@@ -6,13 +6,12 @@ import { FaWarehouse } from 'react-icons/fa';
 
 import SearchInput from '../../../../components/user/SearchInput';
 import { cn } from '../../../../utils/lib/cn';
-import { Item, Storage } from '../../../../utils/types/api';
+import { Storage } from '../../../../utils/types/api';
 
 export default function Home() {
   const [itemSearch, setItemSearch] = useState('');
   const [storageSearch, setStorageSearch] = useState('');
 
-  const [items, setItems] = useState<Item[]>([]);
   const [storages, setStorages] = useState<Storage[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -23,19 +22,12 @@ export default function Home() {
       setIsLoading(true);
       setError(null);
       try {
-        const [itemsResponse, storagesResponse] = await Promise.all([
-          fetch('http://localhost:8080/api/items'),
-          fetch('http://localhost:8080/api/storages'),
-        ]);
-
-        if (!itemsResponse.ok || !storagesResponse.ok) {
+        const response = await fetch('http://localhost:8080/api/storages');
+        if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
 
-        const itemsData: Item[] = await itemsResponse.json();
-        const storagesData: Storage[] = await storagesResponse.json();
-
-        setItems(itemsData);
+        const storagesData: Storage[] = await response.json();
         setStorages(storagesData);
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Unknown error');
@@ -47,13 +39,12 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const filteredItems = items.filter(
-    (item) =>
-      item.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
-      storages
-        .find((storage) => storage.id === item.storageId)
-        ?.name.toLowerCase()
-        .includes(itemSearch.toLowerCase()),
+  const filteredItems = storages.flatMap((storage) =>
+    storage.categories.filter(
+      (category) =>
+        category.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
+        storage.name.toLowerCase().includes(itemSearch.toLowerCase()),
+    ),
   );
 
   const filteredStorages = storages.filter((storage) =>
@@ -92,7 +83,7 @@ export default function Home() {
           className={cn('h-full overflow-auto p-4', 'grid grid-cols-7 gap-5')}
         >
           {filteredItems.length > 0 ? (
-            filteredItems.map((item, index) => (
+            filteredItems.map((category, index) => (
               <div
                 key={index}
                 className={cn(
@@ -104,12 +95,18 @@ export default function Home() {
                   src='/images/pulpen.png'
                   width={100}
                   height={100}
-                  alt={item.name}
+                  alt={category.name}
                 />
 
-                <p className={cn('font-lexend font-bold')}>{item.name}</p>
+                <p className={cn('font-lexend font-bold')}>{category.name}</p>
 
-                <p className={cn('font-lexend text-sm')}>Gudang ATK</p>
+                <p className={cn('font-lexend text-sm')}>
+                  {
+                    storages.find(
+                      (storage) => storage.id === category.storageId,
+                    )?.name
+                  }
+                </p>
               </div>
             ))
           ) : (
@@ -148,7 +145,7 @@ export default function Home() {
           )}
         >
           {filteredStorages.length > 0 ? (
-            filteredStorages.map((item, index) => (
+            filteredStorages.map((storage, index) => (
               <div
                 key={index}
                 className={cn(
@@ -160,10 +157,9 @@ export default function Home() {
 
                 <div className={cn('mx-4')}>
                   <p className={cn('font-lexend text-xl font-bold')}>
-                    {item.name}
+                    {storage.name}
                   </p>
-
-                  <p className={cn('font-lexend')}>Gudang ATK</p>
+                  <p className={cn('font-lexend')}>{storage.location}</p>
                 </div>
               </div>
             ))

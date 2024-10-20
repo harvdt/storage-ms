@@ -3,12 +3,13 @@ export type Item = {
   name: string;
   quantity: number;
   categoryId: number;
-  storageId: number;
 };
 
 export type Storage = {
   id: number;
   name: string;
+  location: string;
+  categories: Category[];
 };
 
 export type Error = {
@@ -18,6 +19,7 @@ export type Error = {
 export type Category = {
   id: number;
   name: string;
+  storageId: number;
 };
 
 export type Transaction = {

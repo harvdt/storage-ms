@@ -9,9 +9,11 @@ export default function UserLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={cn("min-h-screen bg-gradient-to-r from-secondary to-main")}>
+      <body
+        className={cn('min-h-screen bg-gradient-to-r from-secondary to-main')}
+      >
         <TopBar></TopBar>
-        <main className={cn("px-6 py-10 flex")}>
+        <main className={cn('flex px-6 py-10')}>
           <SideBar></SideBar>
           {children}
         </main>
