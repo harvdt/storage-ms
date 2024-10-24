@@ -5,15 +5,87 @@ import React, { useEffect, useState } from 'react';
 import { FaFilter } from 'react-icons/fa6';
 import { ImCancelCircle } from 'react-icons/im';
 
-import SearchInput from '../../../../components/user/SearchInput';
+import ErrorState from '@/components/global/ErrorState';
+import ItemCard from '@/components/global/ItemsCard';
+import LoadingState from '@/components/global/LoadingState';
+import SearchInput from '@/components/global/SearchInput';
+
 import { cn } from '../../../../utils/lib/cn';
 import { Item, Storage } from '../../../../utils/types/api';
 
+const FilterModal = ({
+  isOpen,
+  onClose,
+  storages,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  storages: Storage[];
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className={cn(
+        'fixed inset-0 z-50 flex items-start justify-end bg-black/20 pr-6 pt-36',
+        'transition-opacity duration-300',
+        isOpen ? 'opacity-100' : 'opacity-0',
+      )}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        className={cn(
+          'h-[25rem] w-80 rounded-lg bg-white shadow-lg',
+          'transform transition-transform duration-300',
+          isOpen ? 'translate-x-0' : 'translate-x-full',
+        )}
+      >
+        <div className='p-4'>
+          <button onClick={onClose} className='flex w-full justify-end'>
+            <ImCancelCircle
+              className={cn(
+                'cursor-pointer text-3xl text-main hover:opacity-80',
+              )}
+            />
+          </button>
+
+          <div className={cn('mt-4 h-[21rem] overflow-y-auto pr-4')}>
+            {storages.map((storage, index) => (
+              <div
+                key={index}
+                className={cn(
+                  'my-2 h-28 w-full rounded-lg',
+                  'flex items-center bg-gradient-to-b from-main to-secondary pl-8',
+                  'transform cursor-pointer transition-all hover:scale-[0.98]',
+                )}
+              >
+                <Image
+                  src='/images/pulpen.png'
+                  width={40}
+                  height={40}
+                  alt={storage.name}
+                  className='object-contain'
+                />
+
+                <div className={cn('mx-4')}>
+                  <p className={cn('font-lexend text-xl font-bold')}>
+                    {storage.name}
+                  </p>
+                  <p className={cn('font-lexend')}>{storage.location}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Inventory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [items, setItems] = useState<Item[]>([]);
-  const [_storages, setStorages] = useState<Storage[]>([]);
+  const [storages, setStorages] = useState<Storage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,31 +118,19 @@ export default function Inventory() {
     fetchData();
   }, []);
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
-  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.currentTarget === event.target) {
-      toggleModal();
-    }
-  };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
     <main>
       <div className={cn('flex w-[80rem] justify-between')}>
         <SearchInput placeholder='Cari Kategori' containerStyles='w-[76rem]' />
 
-        <button onClick={toggleModal}>
-          <FaFilter size={42} className={cn('opacity-50 hover:opacity-100')} />
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className='transform transition-all hover:scale-105'
+        >
+          <FaFilter
+            size={42}
+            className={cn('text-white opacity-50 hover:opacity-100')}
+          />
         </button>
       </div>
 
@@ -84,72 +144,36 @@ export default function Inventory() {
             'absolute inset-0 rounded-lg bg-white opacity-50',
             'z-[-1]',
           )}
-        ></div>
+        />
 
-        <div
-          className={cn('h-full overflow-auto p-4', 'grid grid-cols-7 gap-5')}
-        >
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className={cn(
-                'h-40 w-40 rounded-lg',
-                'flex flex-col items-center justify-center bg-gradient-to-b from-main to-secondary',
+        <div className={cn('h-full w-full overflow-auto p-4')}>
+          {isLoading ? (
+            <LoadingState containerClass='h-full' />
+          ) : error ? (
+            <ErrorState message={error} containerClass='h-full' />
+          ) : (
+            <div className={cn('grid grid-cols-7 gap-5')}>
+              {items.length > 0 ? (
+                items.map((item, index) => <ItemCard key={index} item={item} />)
+              ) : (
+                <p
+                  className={cn(
+                    'col-span-7 text-center font-lexend text-gray-600',
+                  )}
+                >
+                  No items found
+                </p>
               )}
-            >
-              <Image
-                src='/images/pulpen.png'
-                width={100}
-                height={100}
-                alt={item.name}
-              />
-
-              <p className={cn('font-lexend font-bold')}>{item.name}</p>
-
-              <p className={cn('font-lexend text-sm')}>{item.quantity}</p>
             </div>
-          ))}
+          )}
         </div>
       </div>
 
-      {isModalOpen && (
-        <div
-          className={cn(
-            'fixed inset-0 z-50 flex justify-end bg-black bg-opacity-20 pr-6 pt-36',
-          )}
-          onClick={handleOverlayClick}
-        >
-          <div className={cn('h-[25rem] w-80 rounded-lg bg-white pl-4 pt-4')}>
-            <button onClick={toggleModal}>
-              <ImCancelCircle
-                className={cn('cursor-pointer text-3xl text-main')}
-              />
-            </button>
-
-            <div className={cn('h-[21rem] overflow-y-auto')}>
-              {/*storages.map((item, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    'my-2 h-28 w-[18rem] rounded-lg',
-                    'flex items-center bg-gradient-to-b from-main to-secondary pl-8',
-                  )}
-                >
-                  <FaWarehouse size={40} />
-
-                  <div className={cn('mx-4')}>
-                    <p className={cn('font-lexend text-xl font-bold')}>
-                      {item.name}
-                    </p>
-
-                    <p className={cn('font-lexend')}>{item.location}</p>
-                  </div>
-                </div>
-              ))*/}
-            </div>
-          </div>
-        </div>
-      )}
+      <FilterModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        storages={storages}
+      />
     </main>
   );
 }

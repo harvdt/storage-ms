@@ -1,5 +1,6 @@
-import SideBar from '../../../components/user/SideBar';
-import TopBar from '../../../components/user/TopBar';
+import SideBar from '@/components/user/SideBar';
+import TopBar from '@/components/user/TopBar';
+
 import { cn } from '../../../utils/lib/cn';
 
 export default function UserLayout({
@@ -12,7 +13,7 @@ export default function UserLayout({
       <body
         className={cn('min-h-screen bg-gradient-to-r from-secondary to-main')}
       >
-        <TopBar></TopBar>
+        <TopBar />
         <main className={cn('flex px-6 py-10')}>
           <SideBar></SideBar>
           {children}

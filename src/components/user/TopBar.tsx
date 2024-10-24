@@ -1,6 +1,6 @@
 import { BsCart3 } from 'react-icons/bs';
 
-import { cn } from '../../utils/lib/cn';
+import { cn } from '../../../utils/lib/cn';
 
 const TopBar = () => {
   return (

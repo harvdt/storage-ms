@@ -7,7 +7,7 @@ import { FaHome } from 'react-icons/fa';
 import { FaCircleInfo } from 'react-icons/fa6';
 import { MdInventory } from 'react-icons/md';
 
-import { cn } from '../../utils/lib/cn';
+import { cn } from '../../../utils/lib/cn';
 
 const SideBar = () => {
   const path = usePathname();
