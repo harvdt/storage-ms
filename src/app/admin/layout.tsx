@@ -1,9 +1,9 @@
+import SideBarAdmin from '@/components/admin/SideBarAdmin';
 import TopBar from '@/components/global/TopBar';
-import SideBar from '@/components/user/SideBar';
 
 import { cn } from '../../../utils/lib/cn';
 
-export default function UserLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -15,7 +15,7 @@ export default function UserLayout({
       >
         <TopBar />
         <main className={cn('flex px-6 py-10')}>
-          <SideBar></SideBar>
+          <SideBarAdmin />
           {children}
         </main>
       </body>

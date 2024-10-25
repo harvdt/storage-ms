@@ -1,5 +1,7 @@
 import { BsCart3 } from 'react-icons/bs';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import { cn } from '../../../utils/lib/cn';
 
 const TopBar = () => {
@@ -13,9 +15,16 @@ const TopBar = () => {
         </p>
       </div>
 
-      <button className={cn('flex items-center justify-center')}>
-        <BsCart3 className={cn('text-main')} size={24} />
-      </button>
+      <div className={cn('flex gap-x-4')}>
+        <button className={cn('flex items-center justify-center')}>
+          <BsCart3 className={cn('text-main')} size={28} />
+        </button>
+
+        <Avatar>
+          <AvatarImage src='https://github.com/shadcn.png' />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </div>
     </div>
   );
 };
