@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaFilter } from 'react-icons/fa6';
+import { FaWarehouse } from 'react-icons/fa6';
 import { ImCancelCircle } from 'react-icons/im';
 
 import ErrorState from '@/components/global/ErrorState';
-import ItemCard from '@/components/global/ItemsCard';
+import ItemCard from '@/components/global/ItemCard';
 import LoadingState from '@/components/global/LoadingState';
 import SearchInput from '@/components/global/SearchInput';
 
@@ -40,16 +40,22 @@ const FilterModal = ({
           isOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
-        <div className='p-4'>
-          <button onClick={onClose} className='flex w-full justify-end'>
-            <ImCancelCircle
-              className={cn(
-                'cursor-pointer text-3xl text-main hover:opacity-80',
-              )}
-            />
-          </button>
+        <div className={cn('p-4')}>
+          <div className={cn('flex w-full justify-between')}>
+            <p className={cn('font-lexend text-2xl font-bold text-main')}>
+              Pilih Gudang
+            </p>
 
-          <div className={cn('mt-4 h-[21rem] overflow-y-auto pr-4')}>
+            <button onClick={onClose}>
+              <ImCancelCircle
+                className={cn(
+                  'cursor-pointer text-3xl text-main hover:opacity-80',
+                )}
+              />
+            </button>
+          </div>
+
+          <div className={cn('mt-4 h-[21rem] overflow-y-auto')}>
             {storages.map((storage, index) => (
               <div
                 key={index}
@@ -59,19 +65,15 @@ const FilterModal = ({
                   'transform cursor-pointer transition-all hover:scale-[0.98]',
                 )}
               >
-                <Image
-                  src='/images/pulpen.png'
-                  width={40}
-                  height={40}
-                  alt={storage.name}
-                  className='object-contain'
-                />
+                <FaWarehouse size={48} className={cn('text-white')} />
 
                 <div className={cn('mx-4')}>
-                  <p className={cn('font-lexend text-xl font-bold')}>
+                  <p className={cn('font-lexend text-xl font-bold text-white')}>
                     {storage.name}
                   </p>
-                  <p className={cn('font-lexend')}>{storage.location}</p>
+                  <p className={cn('font-lexend text-white')}>
+                    {storage.location}
+                  </p>
                 </div>
               </div>
             ))}

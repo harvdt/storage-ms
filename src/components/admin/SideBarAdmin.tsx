@@ -55,7 +55,7 @@ const SideBarAdmin = () => {
       </Link>
 
       <Link
-        href='/transaction'
+        href='/admin/transaction'
         className={cn(
           'group relative h-10 w-40 rounded-lg bg-white [box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
           'flex items-center gap-x-2 overflow-hidden px-2',
