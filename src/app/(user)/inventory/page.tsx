@@ -1,49 +1,50 @@
-'use client'
+'use client';
 
 import Image from 'next/image';
-import React, { useState } from 'react';
-import { FaWarehouse } from "react-icons/fa";
-import { FaFilter } from "react-icons/fa6";
-import { ImCancelCircle } from "react-icons/im";
+import React, { useEffect, useState } from 'react';
+import { FaFilter } from 'react-icons/fa6';
+import { ImCancelCircle } from 'react-icons/im';
 
 import SearchInput from '../../../../components/user/SearchInput';
 import { cn } from '../../../../utils/lib/cn';
-
-const items = Array(40).fill({
-  name: "Nama Barang",
-  location: "Gudang ATK",
-  image: "/images/pulpen.png"
-});
-
-const storages = [
-  {
-    name: "Gudang ATK",
-    location: "TSO Manyar",
-  },
-  {
-    name: "Gudang Merch",
-    location: "TSO Manyar",
-  },
-  {
-    name: "Gudang 3",
-    location: "TSO Manyar",
-  },
-  {
-    name: "Gudang 4",
-    location: "TSO Manyar",
-  },
-  {
-    name: "Gudang 5",
-    location: "TSO Manyar",
-  },
-  {
-    name: "Gudang 6",
-    location: "TSO Manyar",
-  },
-]
+import { Item, Storage } from '../../../../utils/types/api';
 
 export default function Inventory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [items, setItems] = useState<Item[]>([]);
+  const [storages, setStorages] = useState<Storage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const [itemsResponse, storagesResponse] = await Promise.all([
+          fetch('http://localhost:8080/api/items'),
+          fetch('http://localhost:8080/api/storages'),
+        ]);
+
+        if (!itemsResponse.ok || !storagesResponse.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const itemsData: Item[] = await itemsResponse.json();
+        const storagesData: Storage[] = await storagesResponse.json();
+
+        setItems(itemsData);
+        setStorages(storagesData);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : 'Unknown error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -55,53 +56,57 @@ export default function Inventory() {
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <main>
-      <div className={cn("flex justify-between w-[80rem]")}>
-        <SearchInput
-          placeholder="Cari Kategori"
-          containerStyles="w-[76rem]"
-        />
+      <div className={cn('flex w-[80rem] justify-between')}>
+        <SearchInput placeholder='Cari Kategori' containerStyles='w-[76rem]' />
 
         <button onClick={toggleModal}>
-          <FaFilter
-            size={42}
-            className={cn("opacity-50 hover:opacity-100")}
-          />
+          <FaFilter size={42} className={cn('opacity-50 hover:opacity-100')} />
         </button>
       </div>
 
-      <div className={cn(
-        "mt-6 rounded-lg h-[40rem] w-[80rem] relative flex flex-col justify-center",
-      )}>
-        <div className={cn(
-          "absolute inset-0 bg-white rounded-lg opacity-50",
-          "z-[-1]"
-        )}></div>
+      <div
+        className={cn(
+          'relative mt-6 flex h-[40rem] w-[80rem] flex-col justify-center rounded-lg',
+        )}
+      >
+        <div
+          className={cn(
+            'absolute inset-0 rounded-lg bg-white opacity-50',
+            'z-[-1]',
+          )}
+        ></div>
 
-        <div className={cn(
-          "p-4 h-full overflow-auto",
-          "grid grid-cols-7 gap-5",
-        )}>
+        <div
+          className={cn('h-full overflow-auto p-4', 'grid grid-cols-7 gap-5')}
+        >
           {items.map((item, index) => (
-            <div key={index} className={cn(
-              "rounded-lg h-40 w-40",
-              "bg-gradient-to-b from-main to-secondary flex flex-col justify-center items-center",
-            )}>
+            <div
+              key={index}
+              className={cn(
+                'h-40 w-40 rounded-lg',
+                'flex flex-col items-center justify-center bg-gradient-to-b from-main to-secondary',
+              )}
+            >
               <Image
-                src={item.image}
+                src='/images/pulpen.png'
                 width={100}
                 height={100}
                 alt={item.name}
               />
 
-              <p className={cn("font-lexend font-bold")}>
-                {item.name}
-              </p>
-              
-              <p className={cn("font-lexend text-sm")}>
-                {item.location}
-              </p>
+              <p className={cn('font-lexend font-bold')}>{item.name}</p>
+
+              <p className={cn('font-lexend text-sm')}>{item.quantity}</p>
             </div>
           ))}
         </div>
@@ -109,33 +114,38 @@ export default function Inventory() {
 
       {isModalOpen && (
         <div
-          className={cn("fixed inset-0 bg-black bg-opacity-20 flex justify-end pr-6 pt-36 z-50")}
+          className={cn(
+            'fixed inset-0 z-50 flex justify-end bg-black bg-opacity-20 pr-6 pt-36',
+          )}
           onClick={handleOverlayClick}
         >
-          <div className={cn("bg-white pt-4 pl-4 rounded-lg h-[25rem] w-80")}>
+          <div className={cn('h-[25rem] w-80 rounded-lg bg-white pl-4 pt-4')}>
             <button onClick={toggleModal}>
-              <ImCancelCircle className={cn("text-main text-3xl cursor-pointer",)}/>
+              <ImCancelCircle
+                className={cn('cursor-pointer text-3xl text-main')}
+              />
             </button>
 
-            <div className={cn("h-[21rem] overflow-y-auto")}>
-              {storages.map((item, index) => (
-                <div key={index} className={cn(
-                  "rounded-lg h-28 w-[18rem] my-2",
-                  "bg-gradient-to-b from-main to-secondary flex items-center pl-8",
-                )}>
+            <div className={cn('h-[21rem] overflow-y-auto')}>
+              {/*storages.map((item, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    'my-2 h-28 w-[18rem] rounded-lg',
+                    'flex items-center bg-gradient-to-b from-main to-secondary pl-8',
+                  )}
+                >
                   <FaWarehouse size={40} />
 
-                  <div className={cn("mx-4")}>
-                    <p className={cn("font-lexend font-bold text-xl")}>
+                  <div className={cn('mx-4')}>
+                    <p className={cn('font-lexend text-xl font-bold')}>
                       {item.name}
                     </p>
-                    
-                    <p className={cn("font-lexend")}>
-                      {item.location}
-                    </p>
+
+                    <p className={cn('font-lexend')}>{item.location}</p>
                   </div>
                 </div>
-              ))}
+              ))*/}
             </div>
           </div>
         </div>

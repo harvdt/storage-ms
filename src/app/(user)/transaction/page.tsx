@@ -1,9 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export default function Transaction() {
-  return (
-    <main>
-      Transaction
-    </main>
-  )
+  return <main>Transaction</main>;
 }
