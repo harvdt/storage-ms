@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaWarehouse } from 'react-icons/fa';
 
 import ErrorState from '@/components/global/ErrorState';
@@ -10,15 +10,22 @@ import NoItemsFound from '@/components/global/NoItemsFound';
 import SearchInput from '@/components/global/SearchInput';
 
 import { cn } from '@/utils/lib/cn';
+import useDebounce from '@/utils/lib/helper';
+import { Storage } from '@/utils/types/api';
 
 export default function Home() {
-  const [itemSearch, setItemSearch] = useState('');
-  const [storageSearch, setStorageSearch] = useState('');
-  const [storages, setStorages] = useState<Storage[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [itemSearch, setItemSearch] = React.useState('');
+  const [itemResult, setItemResult] = React.useState('');
+  const [storageSearch, setStorageSearch] = React.useState('');
 
-  useEffect(() => {
+  const [storages, setStorages] = React.useState<Storage[]>([]);
+
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const debounce = useDebounce(itemSearch);
+
+  React.useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
@@ -40,11 +47,15 @@ export default function Home() {
     fetchData();
   }, []);
 
+  React.useEffect(() => {
+    setItemResult(debounce);
+  }, [debounce]);
+
   const filteredItems = storages.flatMap((storage) =>
     storage.categories.filter(
-      (category: { name: string }) =>
-        category.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
-        storage.name.toLowerCase().includes(itemSearch.toLowerCase()),
+      (category) =>
+        category.name.toLowerCase().includes(itemResult.toLowerCase()) ||
+        storage.name.toLowerCase().includes(itemResult.toLowerCase()),
     ),
   );
 

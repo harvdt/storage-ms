@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaFilter } from 'react-icons/fa6';
 import { ImCancelCircle } from 'react-icons/im';
 
@@ -11,15 +11,15 @@ import { cn } from '@/utils/lib/cn';
 import { Item, Storage } from '@/utils/types/api';
 
 export default function Inventory() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = React.useState<Item[]>([]);
   // eslint-disable-next-line unused-imports/no-unused-vars
-  const [storages, setStorages] = useState<Storage[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [storages, setStorages] = React.useState<Storage[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
