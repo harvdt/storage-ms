@@ -3,7 +3,7 @@ import { DM_Serif_Display, Lexend } from 'next/font/google';
 
 import './globals.css';
 
-import { cn } from '../../utils/lib/cn';
+import { cn } from '@/utils/lib/cn';
 
 const lexend = Lexend({
   subsets: ['latin'],

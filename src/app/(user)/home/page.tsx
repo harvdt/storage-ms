@@ -1,4 +1,5 @@
 'use client';
+
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { FaWarehouse } from 'react-icons/fa';
@@ -8,8 +9,7 @@ import LoadingState from '@/components/global/LoadingState';
 import NoItemsFound from '@/components/global/NoItemsFound';
 import SearchInput from '@/components/global/SearchInput';
 
-import { cn } from '../../../../utils/lib/cn';
-import { Storage } from '../../../../utils/types/api';
+import { cn } from '@/utils/lib/cn';
 
 export default function Home() {
   const [itemSearch, setItemSearch] = useState('');
@@ -42,7 +42,7 @@ export default function Home() {
 
   const filteredItems = storages.flatMap((storage) =>
     storage.categories.filter(
-      (category) =>
+      (category: { name: string }) =>
         category.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
         storage.name.toLowerCase().includes(itemSearch.toLowerCase()),
     ),

@@ -1,7 +1,7 @@
-import TopBar from '@/components/global/TopBar';
 import SideBar from '@/components/user/SideBar';
+import TopBar from '@/components/user/TopBar';
 
-import { cn } from '../../../utils/lib/cn';
+import { cn } from '@/utils/lib/cn';
 
 export default function UserLayout({
   children,
@@ -15,7 +15,7 @@ export default function UserLayout({
       >
         <TopBar />
         <main className={cn('flex px-6 py-10')}>
-          <SideBar></SideBar>
+          <SideBar />
           {children}
         </main>
       </body>
