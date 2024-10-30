@@ -5,48 +5,31 @@ import React from 'react';
 import { FaFilter } from 'react-icons/fa6';
 import { ImCancelCircle } from 'react-icons/im';
 
+import useFetch from '@/hooks/useFetch';
+
 import SearchInput from '@/components/global/SearchInput';
 
 import { cn } from '@/utils/lib/cn';
-import { Item, Storage } from '@/utils/types/api';
+import { Item } from '@/utils/types/api';
 
 export default function Inventory() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const [items, setItems] = React.useState<Item[]>([]);
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  const [storages, setStorages] = React.useState<Storage[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const {
+    data: items,
+    loading: itemsLoading,
+    error: itemsError,
+  } = useFetch<Item[]>('http://localhost:8080/api/items');
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const [itemsResponse, storagesResponse] = await Promise.all([
-          fetch('http://localhost:8080/api/items'),
-          fetch('http://localhost:8080/api/storages'),
-        ]);
-
-        if (!itemsResponse.ok || !storagesResponse.ok) {
-          throw new Error('Failed to fetch data');
-        }
-
-        const itemsData: Item[] = await itemsResponse.json();
-        const storagesData: Storage[] = await storagesResponse.json();
-
-        setItems(itemsData);
-        setStorages(storagesData);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'Unknown error');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  //! [ IF THE STORAGES DATA IS READY TO FETCH ]
+  //! Uncomment the line below
+  /*
+  const {
+    data: storages,
+    loading: storagesLoading,
+    error: storagesError,
+  } = useFetch('http://localhost:8080/api/storages');
+   */
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -58,12 +41,21 @@ export default function Inventory() {
     }
   };
 
-  if (isLoading) {
+  //! [ IF THE STORAGES DATA IS READY TO FETCH ]
+  //! Don't forget to add the state (storagesLoading & storagesError) to the conditional below (use the || operator)
+
+  if (itemsLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (itemsError) {
+    return <div>Error: Terjadi kesalahan</div>; //! Need the detailed error message from both fetch response
+  }
+
+  //! [ IF THE STORAGES DATA IS READY TO FETCH ]
+  //! Don't forget to add the storages to the conditional below (use the || operator) to handle when the value is null
+  if (!items) {
+    return <div>Data tidak ditemukan</div>;
   }
 
   return (
