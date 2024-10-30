@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { cn } from '@/lib/utils';
+
 import {
   Table,
   TableBody,
@@ -9,7 +11,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { cn } from '../../../../utils/lib/cn';
+const tableHeader = [
+  'Nama Pemesan',
+  'Jenis Request',
+  'Divisi',
+  'Jabatan',
+  'Tanggal Pemesanan',
+  'Status',
+  'Detail',
+];
 
 const requests = [
   {
@@ -45,27 +55,14 @@ export default function Transaction() {
         <Table>
           <TableHeader>
             <TableRow className='bg-gradient-to-r from-main to-secondary'>
-              <TableHead className='py-3 text-center font-lexend font-bold text-white'>
-                Nama Pemesan
-              </TableHead>
-              <TableHead className='py-3 text-center font-lexend font-bold text-white'>
-                Jenis Request
-              </TableHead>
-              <TableHead className='py-3 text-center font-lexend font-bold text-white'>
-                Divisi
-              </TableHead>
-              <TableHead className='py-3 text-center font-lexend font-bold text-white'>
-                Jabatan
-              </TableHead>
-              <TableHead className='py-3 text-center font-lexend font-bold text-white'>
-                Tanggal Pemesanan
-              </TableHead>
-              <TableHead className='py-3 text-center font-lexend font-bold text-white'>
-                Status
-              </TableHead>
-              <TableHead className='py-3 text-center font-lexend font-bold text-white'>
-                Detail
-              </TableHead>
+              {tableHeader.map((item, index) => (
+                <TableHead
+                  key={index}
+                  className='py-3 text-center font-lexend font-bold text-white'
+                >
+                  {item}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React from 'react';
 import { FaWarehouse } from 'react-icons/fa';
 
+import { cn } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
 import ErrorState from '@/components/global/ErrorState';
@@ -11,9 +12,9 @@ import LoadingState from '@/components/global/LoadingState';
 import NoItemsFound from '@/components/global/NoItemsFound';
 import SearchInput from '@/components/global/SearchInput';
 
-import { cn } from '@/utils/lib/cn';
-import useDebounce from '@/utils/lib/helper';
-import { Storage } from '@/utils/types/api';
+import useDebounce from '@/utils/helper';
+
+import { Storage } from '@/types/api';
 
 export default function Home() {
   const [itemSearch, setItemSearch] = React.useState('');

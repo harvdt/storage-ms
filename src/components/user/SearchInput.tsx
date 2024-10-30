@@ -1,11 +1,7 @@
 import React, { ChangeEvent, FormEvent } from 'react';
 import { IoSearch } from 'react-icons/io5';
 
-<<<<<<<< HEAD:src/components/global/SearchInput.tsx
 import { cn } from '@/lib/utils';
-========
-import { cn } from '@/utils/lib/cn';
->>>>>>>> 7a095d8 (fix: folder structure):src/components/user/SearchInput.tsx
 
 type SearchInputProps = {
   placeholder?: string;

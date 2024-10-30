@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ImCancelCircle } from 'react-icons/im';
 
-import { cn } from '@/utils/lib/cn';
+import { cn } from '@/lib/utils';
 
 export default function Index() {
   return (

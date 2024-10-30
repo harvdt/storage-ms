@@ -1,7 +1,7 @@
-import SideBar from '@/components/user/SideBar';
-import TopBar from '@/components/user/TopBar';
+import { cn } from '@/lib/utils';
 
-import { cn } from '@/utils/lib/cn';
+import TopBar from '@/components/global/TopBar';
+import SideBar from '@/components/user/SideBar';
 
 export default function UserLayout({
   children,

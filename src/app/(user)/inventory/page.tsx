@@ -5,12 +5,12 @@ import React from 'react';
 import { FaFilter } from 'react-icons/fa6';
 import { ImCancelCircle } from 'react-icons/im';
 
+import { cn } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
 import SearchInput from '@/components/global/SearchInput';
 
-import { cn } from '@/utils/lib/cn';
-import { Item } from '@/utils/types/api';
+import { Item } from '@/types/api';
 
 export default function Inventory() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
