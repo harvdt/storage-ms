@@ -3,6 +3,7 @@ export type Item = {
   name: string;
   quantity: number;
   categoryId: number;
+  shelf: string;
 };
 
 export type Storage = {

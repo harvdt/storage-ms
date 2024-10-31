@@ -41,6 +41,8 @@ export default function Page({ params }: { params: { id: string } }) {
     payload,
   );
 
+  console.log(category);
+
   // Reset & reload after send the data is success
   React.useEffect(() => {
     if (response) {
@@ -146,8 +148,8 @@ export default function Page({ params }: { params: { id: string } }) {
 
               {/* Location Info */}
               <div className='flex justify-between pr-48 text-sm'>
-                <p>Gudang: belom</p>
-                <p>Rak: belom</p>
+                <p>Gudang: {category.storage.name}</p>
+                <p>Rak: {category.items[0].shelf}</p>
               </div>
             </div>
 
