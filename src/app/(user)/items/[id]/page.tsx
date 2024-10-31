@@ -125,6 +125,8 @@ export default function Page({ params }: { params: { id: string } }) {
     quantity: number;
   } | null>(null);
 
+  const [selectedRequest, setSelectedRequest] = React.useState('Peminjaman');
+
   // Fetch categories with items using the ID from params
   const {
     data: category,
@@ -137,6 +139,10 @@ export default function Page({ params }: { params: { id: string } }) {
   if (!category) {
     return <div>Tidak ada kategori</div>;
   }
+
+  const handleRequestChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRequest(event.target.value);
+  };
 
   return (
     <main className='container mx-auto'>
@@ -250,16 +256,38 @@ export default function Page({ params }: { params: { id: string } }) {
 
                 <div className='space-y-2'>
                   <label
-                    htmlFor='notes'
+                    htmlFor='jenisRequest'
                     className='block text-sm font-semibold'
                   >
-                    Notes
+                    Jenis Request
                   </label>
-                  <textarea
-                    id='notes'
+                  <select
+                    id='jenisRequest'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
-                  />
+                    value={selectedRequest}
+                    onChange={handleRequestChange}
+                  >
+                    <option>Peminjaman</option>
+                    <option>Permintaan</option>
+                  </select>
                 </div>
+
+                {/* Return Time Input */}
+                {selectedRequest === 'Peminjaman' && (
+                  <div className='space-y-2'>
+                    <label
+                      htmlFor='returnTime'
+                      className='block text-sm font-semibold'
+                    >
+                      Return Time
+                    </label>
+                    <input
+                      type='date'
+                      id='returnTime'
+                      className='w-full rounded-md bg-white p-2 text-main outline-none'
+                    />
+                  </div>
+                )}
 
                 <div className='space-y-2'>
                   <label className='block text-sm font-semibold'>Jumlah</label>
@@ -269,6 +297,19 @@ export default function Page({ params }: { params: { id: string } }) {
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                   />
                 </div>
+
+                {/* <div className='space-y-2'>
+                  <label
+                    htmlFor='notes'
+                    className='block text-sm font-semibold'
+                  >
+                    Notes
+                  </label>
+                  <textarea
+                    id='notes'
+                    className='w-full rounded-md bg-white p-2 text-main outline-none'
+                  />
+                </div> */}
 
                 {/* Total Amount */}
                 {/* <div className='space-y-2'>
