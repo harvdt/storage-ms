@@ -46,3 +46,22 @@ export type Transaction = {
   loanTime: string;
   returnTime: string;
 };
+
+export type TransactionField = {
+  quantity: string;
+  employee_name: string;
+  employee_department: string;
+  employee_position: string;
+  status: string;
+  time: string;
+};
+
+export type TransactionPayload = {
+  item_id: number;
+  quantity: number;
+  employee_name: string;
+  employee_department: string;
+  employee_position: string;
+  status: string;
+  time: string;
+};
