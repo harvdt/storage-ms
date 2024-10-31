@@ -20,6 +20,7 @@ export type Category = {
   id: number;
   name: string;
   storageId: number;
+  storage: Storage;
 };
 
 export type Transaction = {
