@@ -33,10 +33,16 @@ export type CategoryWithItems = {
 
 export type Transaction = {
   id: number;
-  employeeName: string;
-  employeeDepartment: string;
-  employeePosition: string;
+  transaction_type: string;
+  globalID: string;
+  employee_name: string;
+  employee_department: string;
+  employee_position: string;
   quantity: number;
   status: string;
+  time: string;
   itemId: number;
+  item: Item;
+  loanTime: string;
+  returnTime: string;
 };
