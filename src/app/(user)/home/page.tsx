@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React from 'react';
 
 import useFetch from '@/hooks/useFetch';
@@ -77,7 +78,9 @@ export default function Home() {
             <div className='grid grid-cols-2 gap-4 text-white sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7'>
               {filteredCategories.length > 0 ? (
                 filteredCategories.map((category, index) => (
-                  <CategoriesCard key={index} category={category} />
+                  <Link href={`/items/${category.id}`} key={index}>
+                    <CategoriesCard category={category} />
+                  </Link>
                 ))
               ) : (
                 <NoItemsFound

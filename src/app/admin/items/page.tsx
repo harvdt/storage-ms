@@ -148,7 +148,7 @@ export default function Items() {
                   filteredStorages.map((storage, index) => (
                     <div
                       key={index}
-                      className='mb-4 flex transform items-center rounded-lg bg-gradient-to-b from-main to-secondary p-4 text-white transition-transform duration-300 hover:shadow-lg'
+                      className='mb-4 flex transform items-center rounded-lg bg-gradient-to-b from-main to-secondary p-4 text-white transition-transform duration-300 hover:scale-105 hover:shadow-lg'
                     >
                       <FaWarehouse className='h-8 w-8 flex-shrink-0 md:h-10 md:w-10' />
                       <div className='ml-4 min-w-0'>

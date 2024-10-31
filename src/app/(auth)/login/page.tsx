@@ -61,15 +61,17 @@ export default function Index() {
           </form>
         </div>
 
-        <button
-          className={cn(
-            'mt-5 h-10 w-60 rounded-xl bg-gradient-to-r from-main to-secondary',
-            'font-lexend font-bold text-white',
-            '[box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
-          )}
-        >
-          Login
-        </button>
+        <Link href='/admin/home'>
+          <button
+            className={cn(
+              'mt-5 h-10 w-60 rounded-xl bg-gradient-to-r from-main to-secondary',
+              'font-lexend font-bold text-white',
+              '[box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
+            )}
+          >
+            Login
+          </button>
+        </Link>
       </div>
     </main>
   );
