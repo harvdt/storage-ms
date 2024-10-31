@@ -279,10 +279,10 @@ export default function Page({ params }: { params: { id: string } }) {
                       htmlFor='returnTime'
                       className='block text-sm font-semibold'
                     >
-                      Return Time
+                      Waktu Kembali
                     </label>
                     <input
-                      type='date'
+                      type='datetime-local'
                       id='returnTime'
                       className='w-full rounded-md bg-white p-2 text-main outline-none'
                     />
