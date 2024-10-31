@@ -1,131 +1,30 @@
 'use client';
 
 import Image from 'next/image';
-import React from 'react';
+import React, { FormEvent } from 'react';
 
 import { cn } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
-import { CategoryWithItems } from '@/types/api';
+import { divisi } from './_data/Division';
 
-const divisi = [
-  {
-    name: 'A/P and A/R Management Division',
-  },
-  {
-    name: 'Area Network Operations Jawa Bali Group',
-  },
-  {
-    name: 'Asset Management Division',
-  },
-  {
-    name: 'Consumer Business Area Jawa Bali Group',
-  },
-  {
-    name: 'Consumer Business Growth and Analytics Area Jawa Bali Division',
-  },
-  {
-    name: 'Consumer Business Region Bali Nusra Division',
-  },
-  {
-    name: 'Consumer Business Region Jawa Tengah and DIY Division',
-  },
-  {
-    name: 'Consumer Business Region Jawa Timur Division',
-  },
-  {
-    name: 'Corporate Communications Division',
-  },
-  {
-    name: 'Customer Care and Retention Area Jawa Bali Division',
-  },
-  {
-    name: 'Customer Care Interaction Management Division',
-  },
-  {
-    name: 'Enterprise Account Management East Area Division',
-  },
-  {
-    name: 'Enterprise Customer Solutions Management Division',
-  },
-  {
-    name: 'Enterprise Delivery and Project Administration Division',
-  },
-  {
-    name: 'Enterprise Service and Experience Management Division',
-  },
-  {
-    name: 'Finance Business Partner East Area Division',
-  },
-  {
-    name: 'Fixed Network Operations Division',
-  },
-  {
-    name: 'General Service East Area Division',
-  },
-  {
-    name: 'Household Segment GTM Area Jawa Bali Division',
-  },
-  {
-    name: 'Integrated Procurement Area Division',
-  },
-  {
-    name: 'IT Operation Area Division',
-  },
-  {
-    name: 'Legal Business Partner and Compliance Area Division',
-  },
-  {
-    name: 'Mobile Segment GTM Area Jawa Bali Division',
-  },
-  {
-    name: 'Network Deployment Support Jawa Bali Division',
-  },
-  {
-    name: 'Network Engineering Support and Consolidation Jawa Bali Division',
-  },
-  {
-    name: 'Network Quality Digitalization Division',
-  },
-  {
-    name: 'Operational Facility Management Division',
-  },
-  {
-    name: 'People Business Partner - Account Team',
-  },
-  {
-    name: 'Prepaid Consumer Area Jawa Bali Division',
-  },
-  {
-    name: 'Region Network Operations and Productivity Bali Nusra Division',
-  },
-  {
-    name: 'Region Network Operations and Productivity Jawa Tengah and DIY Division',
-  },
-  {
-    name: 'Region Network Operations and Productivity Jawa Timur Division',
-  },
-  {
-    name: 'SME Tele and Digital Channel Management Division',
-  },
-  {
-    name: 'Tax Management Division',
-  },
-  {
-    name: 'Territory and Household Partnership Area Jawa Bali Division',
-  },
-  {
-    name: 'Treasury Management Division',
-  },
-];
+import {
+  CategoryWithItems,
+  TransactionField,
+  TransactionPayload,
+} from '@/types/api';
 
 export default function Page({ params }: { params: { id: string } }) {
   const [selectedItem, setSelectedItem] = React.useState<{
+    id: number;
     name: string;
     quantity: number;
   } | null>(null);
 
   const [selectedRequest, setSelectedRequest] = React.useState('Peminjaman');
+
+  const [payload, setPayload] = React.useState<TransactionPayload | null>(null);
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   // Fetch categories with items using the ID from params
   const {
@@ -136,12 +35,56 @@ export default function Page({ params }: { params: { id: string } }) {
     `http://localhost:8080/api/category/${params.id}/items`,
   );
 
+  const { data: response } = useFetch(
+    'http://localhost:8080/api/transaction/inquiry',
+    'POST',
+    payload,
+  );
+
+  // Reset & reload after send the data is success
+  React.useEffect(() => {
+    if (response) {
+      formRef.current?.reset();
+      window.location.reload();
+    }
+  }, [response]);
+
   if (!category) {
     return <div>Tidak ada kategori</div>;
   }
 
   const handleRequestChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRequest(event.target.value);
+  };
+
+  //   Form handling
+  const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (!formRef.current) return;
+
+    const formData = new FormData(formRef.current);
+    const data = Object.fromEntries(formData.entries()) as TransactionField;
+    const {
+      employee_department,
+      employee_name,
+      employee_position,
+      quantity,
+      status,
+      time,
+    } = data;
+
+    const payload: TransactionPayload = {
+      item_id: Number(selectedItem?.id),
+      quantity: Number(quantity),
+      employee_department,
+      employee_name,
+      employee_position,
+      status,
+      time,
+    };
+
+    setPayload(payload);
   };
 
   return (
@@ -190,6 +133,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     )}
                     onClick={() =>
                       setSelectedItem({
+                        id: item.id,
                         name: item.name,
                         quantity: item.quantity,
                       })
@@ -211,27 +155,36 @@ export default function Page({ params }: { params: { id: string } }) {
             <div className='space-y-4 rounded-lg bg-gradient-to-r from-main to-secondary p-6 font-lexend text-white'>
               <p className='text-3xl font-bold'>Form Pemesanan</p>
 
-              <form className='space-y-4'>
+              <form
+                ref={formRef}
+                onSubmit={(e) => e.preventDefault()}
+                className='space-y-4'
+              >
                 <div className='space-y-2'>
-                  <label htmlFor='nama' className='block text-sm font-semibold'>
+                  <label
+                    htmlFor='employee_name'
+                    className='block text-sm font-semibold'
+                  >
                     Nama
                   </label>
                   <input
+                    id='employee_name'
+                    name='employee_name'
                     type='text'
-                    id='nama'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                   />
                 </div>
 
                 <div className='space-y-2'>
                   <label
-                    htmlFor='divisi'
+                    htmlFor='employee_department'
                     className='block text-sm font-semibold'
                   >
                     Divisi
                   </label>
                   <select
-                    id='divisi'
+                    id='employee_department'
+                    name='employee_department'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                   >
                     {divisi.map((divisi, index) => (
@@ -242,27 +195,29 @@ export default function Page({ params }: { params: { id: string } }) {
 
                 <div className='space-y-2'>
                   <label
-                    htmlFor='jabatan'
+                    htmlFor='employee_position'
                     className='block text-sm font-semibold'
                   >
                     Jabatan
                   </label>
                   <input
+                    id='employee_position'
+                    name='employee_position'
                     type='text'
-                    id='jabatan'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                   />
                 </div>
 
                 <div className='space-y-2'>
                   <label
-                    htmlFor='jenisRequest'
+                    htmlFor='status'
                     className='block text-sm font-semibold'
                   >
                     Jenis Request
                   </label>
                   <select
-                    id='jenisRequest'
+                    id='status'
+                    name='status'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                     value={selectedRequest}
                     onChange={handleRequestChange}
@@ -282,8 +237,9 @@ export default function Page({ params }: { params: { id: string } }) {
                       Waktu Kembali
                     </label>
                     <input
+                      id='time'
+                      name='time'
                       type='datetime-local'
-                      id='returnTime'
                       className='w-full rounded-md bg-white p-2 text-main outline-none'
                     />
                   </div>
@@ -293,6 +249,8 @@ export default function Page({ params }: { params: { id: string } }) {
                   <label className='block text-sm font-semibold'>Jumlah</label>
                   <input
                     type='number'
+                    id='quantity'
+                    name='quantity'
                     placeholder='1'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                   />
@@ -323,7 +281,10 @@ export default function Page({ params }: { params: { id: string } }) {
                 </div> */}
 
                 {/* Action Buttons */}
-                <button className='mt-4 w-full rounded-lg bg-white py-3 font-bold text-main shadow-light hover:bg-third hover:text-white hover:shadow-bold'>
+                <button
+                  onClick={handleSubmit}
+                  className='mt-4 w-full rounded-lg bg-white py-3 font-bold text-main shadow-light hover:bg-third hover:text-white hover:shadow-bold'
+                >
                   Pesan
                 </button>
               </form>
