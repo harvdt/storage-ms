@@ -15,6 +15,10 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      boxShadow: {
+        light: '0px 4px 4px rgba(0, 0, 0, 0.50)',
+        bold: '0px 8px 4px rgba(0, 0, 0, 0.50)',
+      },
       colors: {
         main: '#BE0916',
         secondary: '#58040A',

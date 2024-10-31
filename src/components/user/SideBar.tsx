@@ -16,11 +16,11 @@ const SideBar = () => {
       <Link
         href='/home'
         className={cn(
-          'group relative w-full rounded-lg bg-white py-2 [box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
+          'group relative w-full rounded-lg bg-white py-2 shadow-light',
           'flex items-center gap-x-2 overflow-hidden pl-2 pr-8',
           'font-lexend font-bold',
           path === '/home'
-            ? 'bg-gradient-to-r from-main to-secondary text-white [box-shadow:_0px_8px_4px_rgb(0_0_0_/_0.50)]'
+            ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'
             : 'text-black',
           'transition-all duration-300 ease-in-out',
         )}
@@ -33,11 +33,11 @@ const SideBar = () => {
       <Link
         href='/items'
         className={cn(
-          'group relative w-full rounded-lg bg-white py-2 [box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
+          'group relative w-full rounded-lg bg-white py-2 shadow-light',
           'flex items-center gap-x-2 overflow-hidden pl-2 pr-8',
           'font-lexend font-bold',
           path === '/items'
-            ? 'bg-gradient-to-r from-main to-secondary text-white [box-shadow:_0px_8px_4px_rgb(0_0_0_/_0.50)]'
+            ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'
             : 'text-black',
           'transition-all duration-300 ease-in-out',
         )}
@@ -50,11 +50,11 @@ const SideBar = () => {
       <Link
         href='/transaction'
         className={cn(
-          'group relative w-full rounded-lg py-2 [box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
+          'group relative w-full rounded-lg py-2 shadow-light',
           'flex items-center gap-x-2 overflow-hidden bg-white pl-2 pr-8',
           'font-lexend font-bold',
           path === '/transaction'
-            ? 'bg-gradient-to-r from-main to-secondary text-white [box-shadow:_0px_8px_4px_rgb(0_0_0_/_0.50)]'
+            ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'
             : 'text-black',
           'transition-all duration-300 ease-in-out',
         )}

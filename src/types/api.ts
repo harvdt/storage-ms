@@ -23,6 +23,14 @@ export type Category = {
   storage: Storage;
 };
 
+export type CategoryWithItems = {
+  id: number;
+  name: string;
+  storageId: number;
+  storage: Storage;
+  items: Item[];
+};
+
 export type Transaction = {
   id: number;
   employeeName: string;
