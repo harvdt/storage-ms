@@ -43,8 +43,6 @@ export default function Page({ params }: { params: { id: string } }) {
     payload,
   );
 
-  console.log(category);
-
   // Reset & reload after send the data is success
   React.useEffect(() => {
     if (response) {
