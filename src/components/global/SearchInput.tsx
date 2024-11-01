@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent } from 'react';
 import { IoSearch } from 'react-icons/io5';
 
-import { cn } from '../../utils/lib/cn';
+import { cn } from '@/lib/utils';
 
 type SearchInputProps = {
   placeholder?: string;

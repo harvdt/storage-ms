@@ -1,7 +1,7 @@
+import SideBarAdmin from '@/components/admin/SideBarAdmin';
 import TopBar from '@/components/global/TopBar';
-import SideBar from '@/components/user/SideBar';
 
-export default function UserLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -10,8 +10,8 @@ export default function UserLayout({
     <html lang='en'>
       <body className='min-h-screen bg-gradient-to-r from-secondary to-main'>
         <TopBar />
-        <main className='mx-4 mt-8 flex'>
-          <SideBar />
+        <main className='flex px-6 py-10'>
+          <SideBarAdmin />
           {children}
         </main>
       </body>

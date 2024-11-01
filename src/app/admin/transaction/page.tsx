@@ -24,6 +24,7 @@ const tableHeader = [
   'Tanggal Pemesanan',
   'Status',
   'Detail',
+  'Action',
 ];
 
 export default function Transactions() {
@@ -97,9 +98,19 @@ export default function Transactions() {
                     </span>
                   </TableCell>
                   <TableCell className='py-2 text-center'>
-                    <button className='rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'>
+                    <button className='rounded bg-main px-4 py-1.5 font-lexend text-sm font-semibold text-white transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-main focus:ring-offset-2'>
                       Detail
                     </button>
+                  </TableCell>
+                  <TableCell className='py-2 text-center'>
+                    <div className='flex items-center justify-center space-x-2'>
+                      <button className='rounded bg-green-600 px-4 py-1.5 font-lexend text-sm font-semibold text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2'>
+                        Approve
+                      </button>
+                      <button className='rounded bg-red-600 px-4 py-1.5 font-lexend text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2'>
+                        Reject
+                      </button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

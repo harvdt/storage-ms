@@ -1,30 +1,15 @@
 import Link from 'next/link';
 
-import { cn } from '../../utils/lib/cn';
+import { cn } from '@/lib/utils';
 
 export default function Index() {
   return (
-    <main className={cn('flex min-h-screen items-center justify-center')}>
-      <div
-        className={cn(
-          'h-[32rem] w-[28rem] rounded-xl bg-white',
-          'flex flex-col items-center',
-        )}
-      >
-        <p
-          className={cn(
-            'text-center font-dm_serif_display text-4xl text-main',
-            'pt-10 [text-shadow:_5px_5px_4px_rgb(0_0_0_/_0.25)]',
-          )}
-        >
+    <main className='flex min-h-screen items-center justify-center'>
+      <div className='flex h-[32rem] w-[28rem] flex-col items-center rounded-xl bg-white'>
+        <p className='pt-10 text-center font-dm_serif_display text-4xl text-main [text-shadow:_5px_5px_4px_rgb(0_0_0_/_0.25)]'>
           Halo,
         </p>
-        <p
-          className={cn(
-            'text-center font-dm_serif_display text-4xl text-main',
-            'px-16 [text-shadow:_5px_5px_4px_rgb(0_0_0_/_0.25)]',
-          )}
-        >
+        <p className='px-16 text-center font-dm_serif_display text-4xl text-main [text-shadow:_5px_5px_4px_rgb(0_0_0_/_0.25)]'>
           Selamat Datang di OSMS
         </p>
 
@@ -33,11 +18,7 @@ export default function Index() {
           <div className='h-[2px] w-96 rounded-br-lg rounded-tr-lg bg-main'></div>
         </div>
 
-        <div
-          className={cn(
-            'mt-12 flex flex-col items-center justify-center gap-y-10',
-          )}
-        >
+        <div className='mt-12 flex flex-col items-center justify-center gap-y-10'>
           <Link
             href='/home'
             className={cn(
