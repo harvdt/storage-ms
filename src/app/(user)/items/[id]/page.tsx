@@ -21,7 +21,7 @@ export default function Page({ params }: { params: { id: string } }) {
     quantity: number;
   } | null>(null);
 
-  const [selectedRequest, setSelectedRequest] = React.useState('Peminjaman');
+  const [selectedRequest, setSelectedRequest] = React.useState('loaned');
 
   const [payload, setPayload] = React.useState<TransactionPayload | null>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -36,7 +36,9 @@ export default function Page({ params }: { params: { id: string } }) {
   );
 
   const { data: response } = useFetch(
-    'http://localhost:8080/api/transaction/inquiry',
+    selectedRequest === 'loaned'
+      ? 'http://localhost:8080/api/transaction/loan'
+      : 'http://localhost:8080/api/transaction/inquiry',
     'POST',
     payload,
   );
@@ -224,8 +226,8 @@ export default function Page({ params }: { params: { id: string } }) {
                     value={selectedRequest}
                     onChange={handleRequestChange}
                   >
-                    <option>Peminjaman</option>
-                    <option>Permintaan</option>
+                    <option value='loaned'>Peminjaman</option>
+                    <option value='inquired'>Permintaan</option>
                   </select>
                 </div>
 
