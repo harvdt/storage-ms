@@ -136,7 +136,7 @@ export default function UserTransactionsPage() {
                       {transaction.transaction_type === 'Loan'
                         ? 'Peminjaman'
                         : transaction.transaction_type === 'Inquiry'
-                          ? 'Pengembalian'
+                          ? 'Permintaan'
                           : 'Add Item'}
                     </TableCell>
                     <TableCell className='py-2 text-center font-lexend font-medium'>

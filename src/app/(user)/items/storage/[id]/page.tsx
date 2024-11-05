@@ -59,7 +59,7 @@ export default function UserStoragePage({
 
   if (!storage) {
     return (
-      <div className='container mx-auto flex h-screen w-full items-center justify-center'>
+      <div className='container mx-auto flex h-screen w-screen items-center justify-center'>
         <ErrorState message='Storage Tidak Ditemukan' />
       </div>
     );
