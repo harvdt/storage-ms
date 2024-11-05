@@ -39,6 +39,7 @@ export type Transaction = {
   employee_name: string;
   employee_department: string;
   employee_position: string;
+  notes: string;
   quantity: number;
   status: string;
   time: string;
@@ -49,12 +50,14 @@ export type Transaction = {
 };
 
 export type TransactionField = {
-  quantity: string;
   employee_name: string;
   employee_department: string;
   employee_position: string;
   status: string;
   time: string;
+  quantity: string;
+  loan_time?: string;
+  return_time?: string;
 };
 
 export type TransactionPayload = {
@@ -65,4 +68,20 @@ export type TransactionPayload = {
   employee_position: string;
   status: string;
   time: string;
+  loan_time?: string;
+  return_time?: string;
+};
+
+export type AddItemPayload = {
+  employee_name: string;
+  employee_department: string;
+  employee_position: string;
+  quantity: number;
+  notes: string;
+  item: {
+    name: string;
+    shelf: string;
+    category_id: number;
+    quantity: number;
+  };
 };

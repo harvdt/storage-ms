@@ -1,12 +1,14 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { FormEvent } from 'react';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 
 import { cn } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
-import { divisi } from './_data/Division';
+import { divisi } from '../_data/Division';
 
 import {
   CategoryWithItems,
@@ -14,11 +16,12 @@ import {
   TransactionPayload,
 } from '@/types/api';
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function UserItemPage({ params }: { params: { id: string } }) {
   const [selectedItem, setSelectedItem] = React.useState<{
     id: number;
     name: string;
     quantity: number;
+    shelf: string;
   } | null>(null);
 
   const [selectedRequest, setSelectedRequest] = React.useState('loaned');
@@ -63,36 +66,56 @@ export default function Page({ params }: { params: { id: string } }) {
   const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!formRef.current) return;
+    if (!formRef.current || !selectedItem) return;
 
     const formData = new FormData(formRef.current);
     const data = Object.fromEntries(formData.entries()) as TransactionField;
-    const {
-      employee_department,
-      employee_name,
-      employee_position,
-      quantity,
-      status,
-      time,
-    } = data;
 
-    const payload: TransactionPayload = {
-      item_id: Number(selectedItem?.id),
-      quantity: Number(quantity),
-      employee_department,
-      employee_name,
-      employee_position,
-      status,
-      time,
-    };
+    const currentTime = new Date().toISOString();
 
-    setPayload(payload);
+    if (selectedRequest === 'loaned') {
+      const returnTime = data.time ? new Date(data.time).toISOString() : '';
+
+      const loanPayload: TransactionPayload = {
+        item_id: selectedItem.id,
+        quantity: Number(data.quantity),
+        employee_name: data.employee_name,
+        employee_department: data.employee_department,
+        employee_position: data.employee_position,
+        status: 'loaned',
+        time: currentTime,
+        loan_time: currentTime,
+        return_time: returnTime,
+      };
+
+      setPayload(loanPayload);
+    } else {
+      const inquiryPayload: TransactionPayload = {
+        item_id: selectedItem.id,
+        quantity: Number(data.quantity),
+        employee_name: data.employee_name,
+        employee_department: data.employee_department,
+        employee_position: data.employee_position,
+        status: 'inquired',
+        time: currentTime,
+      };
+
+      setPayload(inquiryPayload);
+    }
   };
 
   return (
     <main className='container mx-auto'>
-      <div className='relative w-full rounded-lg px-20 py-16 shadow-lg'>
+      <div className='relative mb-6 w-full rounded-lg px-20 py-16 shadow-lg'>
         <div className='absolute inset-0 z-[-1] rounded-lg bg-white opacity-50' />
+
+        {/* Back Button */}
+        <Link href='/items' className='absolute left-4 top-4'>
+          <IoMdArrowRoundBack
+            size={36}
+            className='cursor-pointer hover:text-secondary'
+          />
+        </Link>
 
         {/* Main Content Grid */}
         <div className='grid grid-cols-1 gap-32 md:grid-cols-2'>
@@ -138,6 +161,7 @@ export default function Page({ params }: { params: { id: string } }) {
                         id: item.id,
                         name: item.name,
                         quantity: item.quantity,
+                        shelf: item.shelf,
                       })
                     }
                   >
@@ -149,7 +173,7 @@ export default function Page({ params }: { params: { id: string } }) {
               {/* Location Info */}
               <div className='flex justify-between pr-48 text-sm'>
                 <p>Gudang: {category.storage.name}</p>
-                <p>Rak: {category.items[0].shelf}</p>
+                <p>Rak: {selectedItem?.shelf}</p>
               </div>
             </div>
 
@@ -230,10 +254,10 @@ export default function Page({ params }: { params: { id: string } }) {
                 </div>
 
                 {/* Return Time Input */}
-                {selectedRequest === 'Peminjaman' && (
+                {selectedRequest === 'loaned' ? (
                   <div className='space-y-2'>
                     <label
-                      htmlFor='returnTime'
+                      htmlFor='time'
                       className='block text-sm font-semibold'
                     >
                       Waktu Kembali
@@ -243,9 +267,10 @@ export default function Page({ params }: { params: { id: string } }) {
                       name='time'
                       type='datetime-local'
                       className='w-full rounded-md bg-white p-2 text-main outline-none'
+                      required
                     />
                   </div>
-                )}
+                ) : null}
 
                 <div className='space-y-2'>
                   <label className='block text-sm font-semibold'>Jumlah</label>

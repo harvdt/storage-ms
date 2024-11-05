@@ -3,7 +3,7 @@ import { ImCancelCircle } from 'react-icons/im';
 
 import { cn } from '@/lib/utils';
 
-export default function Index() {
+export default function LoginPage() {
   return (
     <main className='flex min-h-screen items-center justify-center'>
       <div className='relative flex h-[32rem] w-[28rem] flex-col items-center rounded-xl bg-white'>
