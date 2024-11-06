@@ -22,6 +22,7 @@ export type Category = {
   name: string;
   storageId: number;
   storage: Storage;
+  image: Uint8Array | string;
 };
 
 export type CategoryWithItems = {
@@ -30,6 +31,7 @@ export type CategoryWithItems = {
   storageId: number;
   storage: Storage;
   items: Item[];
+  image: Uint8Array | string;
 };
 
 export type Transaction = {

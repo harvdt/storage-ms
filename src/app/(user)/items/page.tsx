@@ -26,7 +26,9 @@ export default function UserItemsPage() {
     data: categories,
     loading: categoriesLoading,
     error: categoriesError,
-  } = useFetch<Category[]>('http://localhost:8080/api/categories');
+  } = useFetch<Category[]>(
+    'http://localhost:8080/api/categories?page=1&limit=100',
+  );
 
   const {
     data: storages,

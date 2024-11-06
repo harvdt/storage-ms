@@ -125,11 +125,11 @@ export default function UserItemPage({ params }: { params: { id: string } }) {
               <p className='font-lexend text-4xl font-bold text-white'>Order</p>
             </div>
             <Image
-              src='/images/pulpen.png'
+              src={`data:image/jpeg;base64,${category.image}`}
               height={500}
               width={500}
               className='rounded-lg object-contain'
-              alt='Pulpen'
+              alt='Image'
             />
           </div>
 
