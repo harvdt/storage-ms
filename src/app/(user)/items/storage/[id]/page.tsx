@@ -51,7 +51,7 @@ export default function UserStoragePage({
   };
 
   const addItemButtonShown = () => {
-    if (storage && storage.name === 'ATK') {
+    if (storage && storage.name.includes('ATK')) {
       return false;
     }
     return true;
