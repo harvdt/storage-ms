@@ -1,12 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
 import ErrorState from '@/components/global/ErrorState';
 import LoadingState from '@/components/global/LoadingState';
+import NoItemsFound from '@/components/global/NoItemsFound';
+import SearchInput from '@/components/global/SearchInput';
 import {
   Table,
   TableBody,
@@ -15,6 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+
+import useDebounce from '@/utils/helper';
 
 import { Transaction } from '@/types/api';
 
@@ -46,17 +50,17 @@ const DetailModal = ({
       className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 font-lexend'
       onClick={onClick}
     >
-      <div className='relative w-[28rem] rounded-lg bg-white p-6 shadow-lg'>
+      <div
+        className='relative w-[28rem] rounded-lg bg-white p-6 shadow-lg'
+        onClick={(e) => e.stopPropagation()}
+      >
         <p className='text-xl font-bold'>Detail Transaction</p>
-
         <hr className='my-4' />
-
         <div className='mb-4 space-y-2'>
           <p>Nama Item: {transaction.item.name}</p>
           <p>Jumlah Permintaan: {transaction.quantity}</p>
           <p>Jumlah Item Tersedia: {transaction.item.quantity}</p>
         </div>
-
         <button
           className='mt-4 w-full rounded bg-main px-4 py-2 text-white'
           onClick={toggleModal}
@@ -69,13 +73,13 @@ const DetailModal = ({
 };
 
 export default function UserTransactionsPage() {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
-    React.useState<Transaction | null>(null);
+    useState<Transaction | null>(null);
+  const [transactionSearch, setTransactionSearch] = useState('');
+  const [transactionResult, setTransactionResult] = useState('');
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   const handleDetailClick = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
@@ -94,6 +98,20 @@ export default function UserTransactionsPage() {
     error: transactionsError,
   } = useFetch<Transaction[]>('http://localhost:8080/api/transactions');
 
+  const debounce = useDebounce(transactionSearch);
+
+  React.useEffect(() => {
+    setTransactionResult(debounce);
+  }, [debounce]);
+
+  const filteredTransactions = Array.isArray(transactions)
+    ? transactions.filter((transaction) =>
+        transaction.employee_name
+          .toLowerCase()
+          .includes(transactionResult.toLowerCase()),
+      )
+    : [];
+
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -105,12 +123,23 @@ export default function UserTransactionsPage() {
   }
 
   return (
-    <main className='container mx-auto'>
-      <div className='h-[45rem] w-[80rem] overflow-hidden rounded-lg bg-white shadow-lg'>
+    <main className='space-y-6'>
+      {/* Search input for transactions */}
+      <SearchInput
+        placeholder='Cari Transaksi'
+        value={transactionSearch}
+        onChange={(e) => setTransactionSearch(e.target.value)}
+        containerStyles='w-full'
+      />
+
+      {/* Transaction table container */}
+      <div className='overflow-hidden rounded-lg bg-white shadow-lg'>
         {transactionsLoading ? (
           <LoadingState />
         ) : transactionsError ? (
-          <ErrorState message='Error: Terjadi kesalahan' />
+          <ErrorState
+            message={`Error: ${transactionsError.message || 'Terjadi kesalahan'}`}
+          />
         ) : transactions && transactions.length > 0 ? (
           <>
             <Table>
@@ -127,56 +156,68 @@ export default function UserTransactionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transactions.map((transaction, index) => (
-                  <TableRow key={index}>
-                    <TableCell className='py-2 text-center font-lexend font-medium'>
-                      {transaction.employee_name}
-                    </TableCell>
-                    <TableCell className='py-2 text-center font-lexend font-medium'>
-                      {transaction.transaction_type === 'Loan'
-                        ? 'Peminjaman'
-                        : transaction.transaction_type === 'Inquiry'
-                          ? 'Permintaan'
-                          : 'Add Item'}
-                    </TableCell>
-                    <TableCell className='py-2 text-center font-lexend font-medium'>
-                      {transaction.employee_department}
-                    </TableCell>
-                    <TableCell className='py-2 text-center font-lexend font-medium'>
-                      {transaction.employee_position}
-                    </TableCell>
-                    <TableCell className='py-2 text-center font-lexend font-medium'>
-                      {formatDate(transaction.time)}
-                    </TableCell>
-                    <TableCell className='py-2 text-center font-lexend font-medium'>
-                      <span
-                        className={cn(
-                          'rounded-full px-2 py-1 font-lexend text-xs font-medium',
-                          transaction.status === 'Approved'
-                            ? 'bg-green-100 text-green-800'
-                            : transaction.status === 'Ongoing'
-                              ? 'bg-blue-100 text-blue-800'
-                              : transaction.status === 'Pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800',
-                        )}
-                      >
-                        {transaction.status}
-                      </span>
-                    </TableCell>
-                    <TableCell className='py-2 text-center'>
-                      <button
-                        className='rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
-                        onClick={() => handleDetailClick(transaction)}
-                      >
-                        Detail
-                      </button>
+                {filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((transaction, index) => (
+                    <TableRow key={index}>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
+                        {transaction.employee_name}
+                      </TableCell>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
+                        {transaction.transaction_type === 'Loan'
+                          ? 'Peminjaman'
+                          : transaction.transaction_type === 'Inquiry'
+                            ? 'Permintaan'
+                            : 'Add Item'}
+                      </TableCell>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
+                        {transaction.employee_department}
+                      </TableCell>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
+                        {transaction.employee_position}
+                      </TableCell>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
+                        {formatDate(transaction.time)}
+                      </TableCell>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
+                        <span
+                          className={cn(
+                            'rounded-full px-2 py-1 font-lexend text-xs font-medium',
+                            transaction.status === 'Approved'
+                              ? 'bg-green-100 text-green-800'
+                              : transaction.status === 'Ongoing'
+                                ? 'bg-blue-100 text-blue-800'
+                                : transaction.status === 'Pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800',
+                          )}
+                        >
+                          {transaction.status}
+                        </span>
+                      </TableCell>
+                      <TableCell className='py-2 text-center'>
+                        <button
+                          className='rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
+                          onClick={() => handleDetailClick(transaction)}
+                        >
+                          Detail
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className='text-center'>
+                      <NoItemsFound
+                        message='Transaksi Tidak Ditemukan'
+                        textStyles='text-black'
+                      />
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
 
+            {/* Detail modal */}
             <DetailModal
               isOpen={isModalOpen}
               toggleModal={toggleModal}
@@ -185,7 +226,11 @@ export default function UserTransactionsPage() {
             />
           </>
         ) : (
-          <p className='text-center'>No transactions found</p>
+          <NoItemsFound
+            message='Tidak ada transaksi yang tersedia'
+            containerStyles='py-10'
+            textStyles='text-black'
+          />
         )}
       </div>
     </main>

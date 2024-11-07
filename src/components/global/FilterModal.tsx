@@ -46,17 +46,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </div>
 
           <div className='mt-4 h-[calc(100vh-12rem)] overflow-y-auto'>
-            <Link href='/items'>
-              <div className='mb-4 flex transform items-center rounded-lg bg-gradient-to-b from-main to-secondary p-4 text-white transition-transform duration-300 hover:shadow-lg'>
-                <FaWarehouse className='h-8 w-8 flex-shrink-0 md:h-10 md:w-10' />
-                <div className='ml-4 min-w-0'>
-                  <p className='truncate font-lexend text-lg font-bold md:text-xl'>
-                    Show All
-                  </p>
-                </div>
-              </div>
-            </Link>
-
             {storages.length > 0 ? (
               storages.map((storage, index) => (
                 <Link key={index} href={`/items/storage/${storage.id}`}>

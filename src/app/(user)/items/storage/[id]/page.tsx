@@ -90,13 +90,15 @@ export default function UserStoragePage({
       </div>
 
       {/* Main Content Area */}
-      <div className='relative mb-6 mt-6 aspect-[2/1] w-full rounded-lg'>
+      <div className='relative mb-6 mt-6 w-full rounded-lg'>
         <div className='absolute inset-0 z-[-1] rounded-lg bg-white opacity-50' />
 
         <div className='flex w-full items-center justify-between px-4 pb-2 pt-6'>
-          <p className='font-lexend text-3xl font-bold text-white'>
-            Gudang {storage.name}
-          </p>
+          <div className='rounded-lg bg-gradient-to-r from-main to-secondary px-6 py-2 shadow-light'>
+            <p className='font-lexend text-3xl font-bold text-white'>
+              Gudang {storage.name}
+            </p>
+          </div>
 
           {addItemButtonShown() && (
             <button

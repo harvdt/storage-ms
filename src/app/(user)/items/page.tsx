@@ -77,7 +77,7 @@ export default function UserItemsPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className='relative mt-6 aspect-[2/1] w-full rounded-lg'>
+      <div className='relative mt-6 w-full rounded-lg'>
         <div className='absolute inset-0 z-[-1] rounded-lg bg-white opacity-50' />
 
         <div className='h-full w-full overflow-auto p-4'>

@@ -11,10 +11,13 @@ import NoItemsFound from '@/components/global/NoItemsFound';
 import SearchInput from '@/components/global/SearchInput';
 import StoragesCard from '@/components/global/StoragesCard';
 
+import useDebounce from '@/utils/helper';
+
 import { Storage } from '@/types/api';
 
 export default function UserHomePage() {
   const [storageSearch, setStorageSearch] = React.useState('');
+  const [storageResult, setStorageResult] = React.useState('');
 
   const {
     data: storages,
@@ -26,20 +29,26 @@ export default function UserHomePage() {
   //   return <div>Data tidak ditemukan!</div>;
   // }
 
+  const debounce = useDebounce(storageSearch);
+
+  React.useEffect(() => {
+    setStorageResult(debounce);
+  }, [debounce]);
+
   const filteredStorages = Array.isArray(storages)
     ? storages.filter((storage) =>
-        storage.name.toLowerCase().includes(storageSearch.toLowerCase()),
+        storage.name.toLowerCase().includes(storageResult.toLowerCase()),
       )
     : [];
 
   return (
-    <main className='container mx-auto space-y-6'>
+    <main className='space-y-6'>
       {/* Header and Storage Search */}
-      <div className='flex flex-col justify-between gap-4 lg:flex-row lg:items-center'>
+      <div className='flex flex-col justify-between gap-3 lg:flex-row lg:items-center'>
         <p className='font-lexend text-2xl font-bold text-white md:text-3xl'>
           TSO MANYAR
         </p>
-        <div className='lg:w-4/5'>
+        <div className='lg:w-5/6'>
           <SearchInput
             placeholder='Cari Gudang'
             value={storageSearch}
@@ -50,8 +59,12 @@ export default function UserHomePage() {
       </div>
 
       {/* Storage Section */}
-      <div className='relative aspect-[10/3] w-full rounded-lg'>
+      <div className='relative w-full rounded-lg'>
         <div className='absolute inset-0 z-[-1] rounded-lg bg-white opacity-50' />
+
+        <p className='px-4 pb-2 pt-4 font-lexend text-3xl font-bold text-white'>
+          Pilih Gudang
+        </p>
 
         <div className='h-full w-full overflow-auto p-4'>
           {storagesLoading ? (

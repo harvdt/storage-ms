@@ -4,10 +4,15 @@ import { cn } from '@/lib/utils';
 
 type NoItemsFoundProps = {
   containerStyles?: string;
+  textStyles?: string;
   message: string;
 };
 
-const NoItemsFound = ({ containerStyles, message }: NoItemsFoundProps) => {
+const NoItemsFound = ({
+  containerStyles,
+  message,
+  textStyles,
+}: NoItemsFoundProps) => {
   return (
     <div
       className={cn(
@@ -15,7 +20,9 @@ const NoItemsFound = ({ containerStyles, message }: NoItemsFoundProps) => {
         containerStyles,
       )}
     >
-      <p className={cn('text-center font-lexend text-white')}>{message}</p>
+      <p className={cn('text-center font-lexend text-white', textStyles)}>
+        {message}
+      </p>
     </div>
   );
 };
