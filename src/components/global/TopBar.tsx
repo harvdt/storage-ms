@@ -1,5 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { FaUser } from 'react-icons/fa';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const TopBar = () => {
   return (
     <div className='flex justify-between bg-white px-6 py-1'>
@@ -12,8 +13,10 @@ const TopBar = () => {
       </div>
 
       <Avatar>
-        <AvatarImage src='https://github.com/shadcn.png' />
-        <AvatarFallback>CN</AvatarFallback>
+        <AvatarImage src='https://gitub.com/shadcn.png' />
+        <AvatarFallback className='bg-black'>
+          <FaUser className='text-white' />
+        </AvatarFallback>
       </Avatar>
     </div>
   );

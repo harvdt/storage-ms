@@ -8,10 +8,10 @@ import useFetch from '@/hooks/useFetch';
 
 import CategoriesCard from '@/components/global/CategoriesCard';
 import ErrorState from '@/components/global/ErrorState';
-import FilterModal from '@/components/global/FilterModal';
 import LoadingState from '@/components/global/LoadingState';
 import NoItemsFound from '@/components/global/NoItemsFound';
 import SearchInput from '@/components/global/SearchInput';
+import FilterModal from '@/components/user/FilterModal';
 
 import useDebounce from '@/utils/helper';
 
@@ -59,7 +59,7 @@ export default function UserItemsPage() {
     : [];
 
   return (
-    <main className='container mx-auto'>
+    <main className='mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl'>
       {/* Header with Search and Filter */}
       <div className='flex items-center gap-4'>
         <SearchInput
@@ -77,7 +77,7 @@ export default function UserItemsPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className='relative mt-6 w-full rounded-lg'>
+      <div className='relative mt-6 max-h-screen w-full rounded-lg'>
         <div className='absolute inset-0 z-[-1] rounded-lg bg-white opacity-50' />
 
         <div className='h-full w-full overflow-auto p-4'>

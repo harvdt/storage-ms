@@ -27,7 +27,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
       className='fixed inset-0 z-50 flex items-start justify-end bg-black bg-opacity-20'
       onClick={onOverlayClick}
     >
-      <div className='mr-10 mt-32 aspect-[20/30] w-full max-w-sm overflow-hidden rounded-lg bg-white'>
+      <div className='mt-32 aspect-[20/30] w-full max-w-sm overflow-hidden rounded-lg bg-white'>
         <div className='p-4'>
           <div className='flex items-center justify-between gap-x-4'>
             <p className='font-lexend text-2xl font-bold text-main'>

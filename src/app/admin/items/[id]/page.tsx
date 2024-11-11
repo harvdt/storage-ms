@@ -16,7 +16,7 @@ import {
   TransactionPayload,
 } from '@/types/api';
 
-export default function UserItemPage({ params }: { params: { id: string } }) {
+export default function AdminItemPage({ params }: { params: { id: string } }) {
   const [selectedItem, setSelectedItem] = React.useState<{
     id: number;
     name: string;
@@ -113,7 +113,7 @@ export default function UserItemPage({ params }: { params: { id: string } }) {
         <div className='absolute inset-0 z-[-1] rounded-lg bg-white opacity-50' />
 
         {/* Back Button */}
-        <Link href='/items' className='absolute left-4 top-4'>
+        <Link href='/admin/items' className='absolute left-4 top-4'>
           <IoMdArrowRoundBack
             size={36}
             className='cursor-pointer hover:text-secondary'

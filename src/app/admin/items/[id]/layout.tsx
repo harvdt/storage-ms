@@ -1,4 +1,4 @@
-export default function UserItemLayout({
+export default function AdminItemLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

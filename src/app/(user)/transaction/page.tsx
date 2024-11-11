@@ -58,8 +58,12 @@ const DetailModal = ({
         <hr className='my-4' />
         <div className='mb-4 space-y-2'>
           <p>Nama Item: {transaction.item.name}</p>
+
           <p>Jumlah Permintaan: {transaction.quantity}</p>
+
           <p>Jumlah Item Tersedia: {transaction.item.quantity}</p>
+
+          <p>Notes: {transaction.notes}</p>
         </div>
         <button
           className='mt-4 w-full rounded bg-main px-4 py-2 text-white'
@@ -133,7 +137,7 @@ export default function UserTransactionsPage() {
       />
 
       {/* Transaction table container */}
-      <div className='overflow-hidden rounded-lg bg-white shadow-lg'>
+      <div className='max-h-screen overflow-hidden rounded-lg bg-white shadow-lg'>
         {transactionsLoading ? (
           <LoadingState />
         ) : transactionsError ? (

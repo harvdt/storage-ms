@@ -3,5 +3,5 @@ export default function UserStorageLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <main className='mx-4 flex'>{children}</main>;
+  return <main>{children}</main>;
 }

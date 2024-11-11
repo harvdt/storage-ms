@@ -7,16 +7,16 @@ import { FaFilter } from 'react-icons/fa6';
 
 import useFetch from '@/hooks/useFetch';
 
+import FilterModalAdmin from '@/components/admin/FilterModalAdmin';
 import AddCategoryModal from '@/components/global/AddCategoryModal';
 import AddItemModal from '@/components/global/AddItemModal';
 import ErrorState from '@/components/global/ErrorState';
 import NoItemsFound from '@/components/global/NoItemsFound';
 import SearchInput from '@/components/global/SearchInput';
-import FilterModal from '@/components/user/FilterModal';
 
 import { Storage } from '@/types/api';
 
-export default function UserStoragePage({
+export default function AdminStoragePage({
   params,
 }: {
   params: { id: string };
@@ -55,13 +55,6 @@ export default function UserStoragePage({
     if (event.currentTarget === event.target) {
       toggleFilterModal();
     }
-  };
-
-  const isAddButtonShown = () => {
-    if (storage && storage.name.includes('ATK')) {
-      return false;
-    }
-    return true;
   };
 
   if (!storage) {
@@ -107,30 +100,28 @@ export default function UserStoragePage({
             </p>
           </div>
 
-          {isAddButtonShown() && (
-            <div className='space-x-4'>
-              <button
-                onClick={toggleAddCategoryModal}
-                className='rounded-lg bg-main px-4 py-2 font-lexend font-semibold text-white shadow-light hover:bg-third hover:shadow-bold'
-              >
-                Add Category
-              </button>
+          <div className='space-x-4'>
+            <button
+              onClick={toggleAddCategoryModal}
+              className='rounded-lg bg-main px-4 py-2 font-lexend font-semibold text-white shadow-light hover:bg-third hover:shadow-bold'
+            >
+              Add Category
+            </button>
 
-              <button
-                onClick={toggleAddItemModal}
-                className='rounded-lg bg-main px-4 py-2 font-lexend font-semibold text-white shadow-light hover:bg-third hover:shadow-bold'
-              >
-                Add Item
-              </button>
-            </div>
-          )}
+            <button
+              onClick={toggleAddItemModal}
+              className='rounded-lg bg-main px-4 py-2 font-lexend font-semibold text-white shadow-light hover:bg-third hover:shadow-bold'
+            >
+              Add Item
+            </button>
+          </div>
         </div>
 
         <div className='h-full w-full overflow-auto p-4'>
           {filteredCategories.length > 0 ? (
             <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7'>
               {filteredCategories.map((category, index) => (
-                <Link href={`/items/${category.id}`} key={index}>
+                <Link href={`/admin/items/${category.id}`} key={index}>
                   <div className='flex aspect-square transform flex-col items-center justify-center rounded-lg bg-gradient-to-b from-main to-secondary p-4 text-white transition-transform duration-300 hover:scale-105 hover:shadow-lg'>
                     <div className='relative aspect-square w-3/5'>
                       <Image
@@ -173,7 +164,7 @@ export default function UserStoragePage({
       />
 
       {/* Filter Modal */}
-      <FilterModal
+      <FilterModalAdmin
         isModalOpen={isFilterModalOpen}
         toggleModal={toggleFilterModal}
         storages={storages || []}

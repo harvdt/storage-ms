@@ -60,6 +60,7 @@ export type TransactionField = {
   quantity: string;
   loan_time?: string;
   return_time?: string;
+  notes: string;
 };
 
 export type TransactionPayload = {
@@ -72,6 +73,7 @@ export type TransactionPayload = {
   time: string;
   loan_time?: string;
   return_time?: string;
+  notes: string;
 };
 
 export type AddItemPayload = {
