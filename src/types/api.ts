@@ -84,6 +84,7 @@ export type AddItemPayload = {
   notes: string;
   item: {
     name: string;
+    image: File;
     shelf: string;
     category_id: number;
     quantity: number;

@@ -30,11 +30,9 @@ export default function UserItemsPage() {
     'http://localhost:8080/api/categories?page=1&limit=100',
   );
 
-  const {
-    data: storages,
-    loading: _storagesLoading, //used if needed
-    error: _storagesError, //used if needed
-  } = useFetch<Storage[]>('http://localhost:8080/api/storages');
+  const { data: storages } = useFetch<Storage[]>(
+    'http://localhost:8080/api/storages',
+  );
 
   const debounce = useDebounce(categoriesSearch);
 

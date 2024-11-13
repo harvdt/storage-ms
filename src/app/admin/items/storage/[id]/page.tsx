@@ -27,17 +27,13 @@ export default function AdminStoragePage({
   const [isAddItemModalOpen, setIsAddItemModalOpen] = React.useState(false);
   const [categoriesSearch, setCategoriesSearch] = React.useState('');
 
-  const {
-    data: storages,
-    loading: _storagesLoading, // used if needed
-    error: _storagesError, // used if needed
-  } = useFetch<Storage[]>('http://localhost:8080/api/storages');
+  const { data: storages } = useFetch<Storage[]>(
+    'http://localhost:8080/api/storages',
+  );
 
-  const {
-    data: storage,
-    loading: _storageLoading, // used if needed
-    error: _storageError, // used if needed
-  } = useFetch<Storage>(`http://localhost:8080/api/storage/${params.id}`);
+  const { data: storage } = useFetch<Storage>(
+    `http://localhost:8080/api/storage/${params.id}`,
+  );
 
   const toggleFilterModal = () => {
     setIsFilterModalOpen(!isFilterModalOpen);

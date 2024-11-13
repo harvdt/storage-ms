@@ -26,7 +26,6 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
 
   const [selectedRequest, setSelectedRequest] = React.useState('loaned');
 
-  const [payload, setPayload] = React.useState<TransactionPayload | null>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
 
   // Fetch categories with items using the ID from params
@@ -38,12 +37,11 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
     `http://localhost:8080/api/category/${params.id}/items`,
   );
 
-  const { data: response } = useFetch(
+  const { data: response, executeRequest } = useFetch(
     selectedRequest === 'loaned'
       ? 'http://localhost:8080/api/transaction/loan'
       : 'http://localhost:8080/api/transaction/inquiry',
     'POST',
-    payload,
   );
 
   // Reset & reload after send the data is success
@@ -90,7 +88,7 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
         notes: notes,
       };
 
-      setPayload(loanPayload);
+      await executeRequest(loanPayload);
     } else {
       const inquiryPayload: TransactionPayload = {
         item_id: selectedItem.id,
@@ -103,7 +101,7 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
         notes: notes,
       };
 
-      setPayload(inquiryPayload);
+      await executeRequest(inquiryPayload);
     }
   };
 
