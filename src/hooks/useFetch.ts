@@ -3,18 +3,18 @@ import React from 'react';
 
 type FetchMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-type State = {
-  data: any;
+type State<T> = {
+  data: T | null;
   loading: boolean;
   error: Error | null;
 };
 
-type Action =
+type Action<T> =
   | { type: 'LOADING' }
-  | { type: 'SUCCESS'; payload: any }
+  | { type: 'SUCCESS'; payload: T }
   | { type: 'ERROR'; payload: Error };
 
-const dataFetchReducer = (state: State, action: Action) => {
+const dataFetchReducer = <T>(state: State<T>, action: Action<T>): State<T> => {
   switch (action.type) {
     case 'LOADING':
       return { ...state, loading: true };
@@ -30,22 +30,21 @@ const dataFetchReducer = (state: State, action: Action) => {
 const useFetch = <T>(
   url: string,
   method: FetchMethods = 'GET',
-  body?: any,
+  initialBody?: any,
 ): {
   data: T | null;
   loading: boolean;
   error: Error | null;
+  executeRequest: (body?: any) => Promise<void>;
 } => {
-  const [state, dispatch] = React.useReducer(dataFetchReducer, {
+  const [state, dispatch] = React.useReducer(dataFetchReducer<T>, {
     data: null,
     loading: false,
     error: null,
   });
 
-  React.useEffect(() => {
-    let didCancel = false;
-
-    async function fetchData() {
+  const executeRequest = React.useCallback(
+    async (body: any = initialBody) => {
       dispatch({ type: 'LOADING' });
 
       try {
@@ -70,27 +69,24 @@ const useFetch = <T>(
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        if (!didCancel) {
-          const data = await response.json();
-          dispatch({ type: 'SUCCESS', payload: data });
-        }
+        const data = await response.json();
+        dispatch({ type: 'SUCCESS', payload: data });
       } catch (error) {
-        if (!didCancel) {
-          const errorObject =
-            error instanceof Error ? error : new Error(String(error));
-          dispatch({ type: 'ERROR', payload: errorObject });
-        }
+        const errorObject =
+          error instanceof Error ? error : new Error(String(error));
+        dispatch({ type: 'ERROR', payload: errorObject });
       }
+    },
+    [url, method, initialBody],
+  );
+
+  React.useEffect(() => {
+    if (method === 'GET') {
+      executeRequest();
     }
+  }, [method, executeRequest]);
 
-    fetchData();
-
-    return () => {
-      didCancel = true;
-    };
-  }, [url, body, method]);
-
-  return { ...state };
+  return { ...state, executeRequest };
 };
 
 export default useFetch;

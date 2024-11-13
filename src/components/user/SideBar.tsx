@@ -36,7 +36,7 @@ const SideBar = () => {
           'group relative w-full rounded-lg bg-white py-2 shadow-light',
           'flex items-center gap-x-2 overflow-hidden pl-2 pr-8',
           'font-lexend font-bold',
-          path === '/items'
+          path.startsWith('/items')
             ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'
             : 'text-black',
           'transition-all duration-300 ease-in-out',

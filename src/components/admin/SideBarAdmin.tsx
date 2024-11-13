@@ -13,17 +13,12 @@ const SideBarAdmin = () => {
   const path = usePathname();
 
   return (
-    <div
-      className={cn(
-        'relative h-[45.5rem] w-[12rem] rounded-lg',
-        'flex flex-col gap-y-6',
-      )}
-    >
+    <div className={cn('relative rounded-lg', 'flex flex-col gap-y-6')}>
       <Link
         href='/admin/home'
         className={cn(
-          'group relative h-10 w-40 rounded-lg bg-white shadow-light',
-          'flex items-center gap-x-2 overflow-hidden px-2',
+          'group relative w-full rounded-lg bg-white py-2 shadow-light',
+          'flex items-center gap-x-2 overflow-hidden pl-2 pr-8',
           'font-lexend font-bold',
           path === '/admin/home'
             ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'
@@ -39,10 +34,10 @@ const SideBarAdmin = () => {
       <Link
         href='/admin/items'
         className={cn(
-          'group relative h-10 w-40 rounded-lg bg-white shadow-light',
-          'flex items-center gap-x-2 overflow-hidden px-2',
+          'group relative w-full rounded-lg bg-white py-2 shadow-light',
+          'flex items-center gap-x-2 overflow-hidden pl-2 pr-8',
           'font-lexend font-bold',
-          path === '/admin/items'
+          path.startsWith('/admin/items')
             ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'
             : 'text-black',
           'transition-all duration-300 ease-in-out',
@@ -56,8 +51,8 @@ const SideBarAdmin = () => {
       <Link
         href='/admin/transaction'
         className={cn(
-          'group relative h-10 w-40 rounded-lg bg-white shadow-light',
-          'flex items-center gap-x-2 overflow-hidden px-2',
+          'group relative w-full rounded-lg bg-white py-2 shadow-light',
+          'flex items-center gap-x-2 overflow-hidden pl-2 pr-8',
           'font-lexend font-bold',
           path === '/admin/transaction'
             ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'
@@ -73,8 +68,8 @@ const SideBarAdmin = () => {
       <Link
         href='/admin/info'
         className={cn(
-          'group relative h-10 w-40 rounded-lg bg-white shadow-light',
-          'flex items-center gap-x-2 overflow-hidden px-2',
+          'group relative w-full rounded-lg bg-white py-2 shadow-light',
+          'flex items-center gap-x-2 overflow-hidden pl-2 pr-8',
           'font-lexend font-bold',
           path === '/admin/info'
             ? 'bg-gradient-to-r from-main to-secondary text-white shadow-bold'

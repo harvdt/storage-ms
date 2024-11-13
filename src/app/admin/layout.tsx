@@ -8,11 +8,14 @@ export default function AdminLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className='min-h-screen bg-gradient-to-r from-secondary to-main'>
+      <body className='bg-gradient-to-r from-secondary to-main'>
         <TopBar />
-        <main className='flex px-6 py-10'>
-          <SideBarAdmin />
-          {children}
+        <main className='mx-4 mt-8 flex justify-center gap-6'>
+          <div className='flex-[0.1]'>
+            <SideBarAdmin />
+          </div>
+
+          <div className='flex-[0.9]'>{children}</div>
         </main>
       </body>
     </html>

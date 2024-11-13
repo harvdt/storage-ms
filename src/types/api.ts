@@ -22,6 +22,7 @@ export type Category = {
   name: string;
   storageId: number;
   storage: Storage;
+  image: Uint8Array | string;
 };
 
 export type CategoryWithItems = {
@@ -30,15 +31,17 @@ export type CategoryWithItems = {
   storageId: number;
   storage: Storage;
   items: Item[];
+  image: Uint8Array | string;
 };
 
 export type Transaction = {
-  id: number;
+  uuid: string;
   transaction_type: string;
   globalID: string;
   employee_name: string;
   employee_department: string;
   employee_position: string;
+  notes: string;
   quantity: number;
   status: string;
   time: string;
@@ -49,12 +52,15 @@ export type Transaction = {
 };
 
 export type TransactionField = {
-  quantity: string;
   employee_name: string;
   employee_department: string;
   employee_position: string;
   status: string;
   time: string;
+  quantity: string;
+  loan_time?: string;
+  return_time?: string;
+  notes: string;
 };
 
 export type TransactionPayload = {
@@ -65,4 +71,32 @@ export type TransactionPayload = {
   employee_position: string;
   status: string;
   time: string;
+  loan_time?: string;
+  return_time?: string;
+  notes: string;
+};
+
+export type AddItemField = {
+  employee_name: string;
+  employee_department: string;
+  employee_position: string;
+  notes: string;
+  item_name: string;
+  item_shelf: string;
+  item_category_id: string;
+  item_quantity: string;
+};
+
+export type AddItemPayload = {
+  employee_name: string;
+  employee_department: string;
+  employee_position: string;
+  notes: string;
+  item: {
+    name: string;
+    image: File;
+    shelf: string;
+    category_id: number;
+    quantity: number;
+  };
 };
