@@ -35,7 +35,7 @@ export type CategoryWithItems = {
 };
 
 export type Transaction = {
-  id: number;
+  uuid: string;
   transaction_type: string;
   globalID: string;
   employee_name: string;

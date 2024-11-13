@@ -59,11 +59,8 @@ const DetailModal = ({
         <hr className='my-4' />
         <div className='mb-4 space-y-2'>
           <p>Nama Item: {transaction.item.name}</p>
-
           <p>Jumlah Permintaan: {transaction.quantity}</p>
-
           <p>Jumlah Item Tersedia: {transaction.item.quantity}</p>
-
           <p>Notes: {transaction.notes}</p>
         </div>
         <button
@@ -83,6 +80,9 @@ export default function AdminTransactionsPage() {
     useState<Transaction | null>(null);
   const [transactionSearch, setTransactionSearch] = useState('');
   const [transactionResult, setTransactionResult] = useState('');
+  const [selectedTransactionId, setSelectedTransactionId] = useState<
+    string | null
+  >(null);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -127,9 +127,24 @@ export default function AdminTransactionsPage() {
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   }
 
+  const { data: approveResponse, executeRequest: approveRequest } = useFetch(
+    `http://localhost:8080/api/transaction/${selectedTransactionId}/approve`,
+    'PUT',
+  );
+
+  React.useEffect(() => {
+    if (approveResponse) {
+      window.location.reload();
+    }
+  }, [approveResponse]);
+
+  const handleApproveClick = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    approveRequest();
+  };
+
   return (
     <main className='space-y-6'>
-      {/* Search input for transactions */}
       <SearchInput
         placeholder='Cari Transaksi'
         value={transactionSearch}
@@ -137,7 +152,6 @@ export default function AdminTransactionsPage() {
         containerStyles='w-full'
       />
 
-      {/* Transaction table container */}
       <div className='max-h-screen overflow-hidden rounded-lg bg-white shadow-lg'>
         {transactionsLoading ? (
           <LoadingState />
@@ -168,9 +182,9 @@ export default function AdminTransactionsPage() {
                         {transaction.employee_name}
                       </TableCell>
                       <TableCell className='py-2 text-center font-lexend font-medium'>
-                        {transaction.transaction_type === 'Loan'
+                        {transaction.transaction_type === 'loan'
                           ? 'Peminjaman'
-                          : transaction.transaction_type === 'Inquiry'
+                          : transaction.transaction_type === 'inquiry'
                             ? 'Permintaan'
                             : 'Add Item'}
                       </TableCell>
@@ -187,14 +201,12 @@ export default function AdminTransactionsPage() {
                         <span
                           className={cn(
                             'rounded-full px-2 py-1 font-lexend text-xs font-medium',
-                            transaction.status === 'Approved' ||
-                              transaction.status === 'Returned'
+                            transaction.status === 'approved' ||
+                              transaction.status === 'returned'
                               ? 'bg-green-100 text-green-800'
-                              : transaction.status === 'Ongoing'
-                                ? 'bg-blue-100 text-blue-800'
-                                : transaction.status === 'Pending'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800',
+                              : transaction.status === 'pending'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-red-100 text-red-800',
                           )}
                         >
                           {transaction.status}
@@ -209,7 +221,10 @@ export default function AdminTransactionsPage() {
                         </button>
                       </TableCell>
                       <TableCell className='space-x-2 py-2 text-center'>
-                        <button className='rounded bg-green-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-green-700'>
+                        <button
+                          className='rounded bg-green-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-green-700'
+                          onClick={() => handleApproveClick(transaction.uuid)}
+                        >
                           Approve
                         </button>
 
@@ -232,7 +247,6 @@ export default function AdminTransactionsPage() {
               </TableBody>
             </Table>
 
-            {/* Detail modal */}
             <DetailModal
               isOpen={isModalOpen}
               toggleModal={toggleModal}
