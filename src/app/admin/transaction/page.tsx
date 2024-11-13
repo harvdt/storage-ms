@@ -214,7 +214,12 @@ export default function AdminTransactionsPage() {
     }
   }, [approveResponse, rejectResponse, returnResponse]);
 
-  const handleApproveClick = (transactionId: string) => {
+  const handleApproveClick = async (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    await approveRequest();
+  };
+
+  const handleRejectClick = async (transactionId: string) => {
     setSelectedTransactionId(transactionId);
     setActionType('approve');
   };
