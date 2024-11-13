@@ -83,6 +83,9 @@ export default function AdminTransactionsPage() {
   const [selectedTransactionId, setSelectedTransactionId] = useState<
     string | null
   >(null);
+  const [actionType, setActionType] = useState<'approve' | 'reject' | null>(
+    null,
+  );
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -128,19 +131,25 @@ export default function AdminTransactionsPage() {
   );
 
   React.useEffect(() => {
+    if (selectedTransactionId && actionType) {
+      actionType === 'approve' ? approveRequest() : rejectRequest();
+    }
+  }, [selectedTransactionId, actionType, approveRequest, rejectRequest]);
+
+  React.useEffect(() => {
     if (approveResponse || rejectResponse) {
       window.location.reload();
     }
   }, [approveResponse, rejectResponse]);
 
-  const handleApproveClick = async (transactionId: string) => {
+  const handleApproveClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
-    await approveRequest();
+    setActionType('approve');
   };
 
-  const handleRejectClick = async (transactionId: string) => {
+  const handleRejectClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
-    await rejectRequest();
+    setActionType('reject');
   };
 
   return (
