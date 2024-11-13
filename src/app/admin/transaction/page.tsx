@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import { cn } from '@/lib/utils';
+import { capitalize, cn, formatDate } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
 import ErrorState from '@/components/global/ErrorState';
@@ -117,30 +117,30 @@ export default function AdminTransactionsPage() {
       )
     : [];
 
-  function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = String(date.getFullYear()).slice(-2);
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${day}-${month}-${year} ${hours}:${minutes}`;
-  }
-
   const { data: approveResponse, executeRequest: approveRequest } = useFetch(
-    `http://localhost:8080/api/transaction/${selectedTransactionId}/approve`,
-    'PUT',
+    `http://localhost:8080/api/transaction/${selectedTransactionId}/approved`,
+    'PATCH',
+  );
+
+  const { data: rejectResponse, executeRequest: rejectRequest } = useFetch(
+    `http://localhost:8080/api/transaction/${selectedTransactionId}/reject`,
+    'PATCH',
   );
 
   React.useEffect(() => {
-    if (approveResponse) {
+    if (approveResponse || rejectResponse) {
       window.location.reload();
     }
-  }, [approveResponse]);
+  }, [approveResponse, rejectResponse]);
 
-  const handleApproveClick = (transactionId: string) => {
+  const handleApproveClick = async (transactionId: string) => {
     setSelectedTransactionId(transactionId);
-    approveRequest();
+    await approveRequest();
+  };
+
+  const handleRejectClick = async (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    await rejectRequest();
   };
 
   return (
@@ -202,14 +202,17 @@ export default function AdminTransactionsPage() {
                           className={cn(
                             'rounded-full px-2 py-1 font-lexend text-xs font-medium',
                             transaction.status === 'approved' ||
-                              transaction.status === 'returned'
+                              transaction.status === 'Approved' ||
+                              transaction.status === 'returned' ||
+                              transaction.status === 'Returned'
                               ? 'bg-green-100 text-green-800'
-                              : transaction.status === 'pending'
+                              : transaction.status === 'pending' ||
+                                  transaction.status === 'Pending'
                                 ? 'bg-yellow-100 text-yellow-800'
                                 : 'bg-red-100 text-red-800',
                           )}
                         >
-                          {transaction.status}
+                          {capitalize(transaction.status)}
                         </span>
                       </TableCell>
                       <TableCell className='py-2 text-center'>
@@ -228,7 +231,10 @@ export default function AdminTransactionsPage() {
                           Approve
                         </button>
 
-                        <button className='rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'>
+                        <button
+                          className='rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
+                          onClick={() => handleRejectClick(transaction.uuid)}
+                        >
                           Reject
                         </button>
                       </TableCell>

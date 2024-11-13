@@ -5,7 +5,7 @@ import useFetch from '@/hooks/useFetch';
 
 import { divisi } from '../../app/(user)/items/_data/Division';
 
-import { AddItemPayload } from '@/types/api';
+import { AddItemField, AddItemPayload } from '@/types/api';
 
 type Category = {
   id: number;
@@ -41,10 +41,6 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
     }
   }, [response]);
 
-  const handleSelectFile = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -58,23 +54,23 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
     if (!formRef.current || !itemImage) return;
 
     const formData = new FormData(formRef.current);
+    const data = Object.fromEntries(formData.entries()) as AddItemField;
 
-    const addItemPayload: AddItemPayload = {
-      employee_name: formData.get('employee_name') as string,
-      employee_department: formData.get('employee_department') as string,
-      employee_position: formData.get('employee_position') as string,
-      quantity: Number(formData.get('item_quantity')),
-      notes: formData.get('notes') as string,
+    const payload: AddItemPayload = {
+      employee_name: data.employee_name,
+      employee_department: data.employee_department,
+      employee_position: data.employee_position,
+      notes: data.notes,
       item: {
-        name: formData.get('item_name') as string,
+        name: data.item_name,
         image: itemImage,
-        shelf: formData.get('item_shelf') as string,
-        category_id: Number(formData.get('item_category')),
-        quantity: Number(formData.get('item_quantity')),
+        shelf: data.item_shelf,
+        category_id: Number(data.item_category_id),
+        quantity: Number(data.item_quantity),
       },
     };
 
-    await executeRequest(addItemPayload);
+    await executeRequest(payload);
   };
 
   if (!isOpen) return null;
@@ -172,7 +168,7 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
           </label>
           <button
             className='mt-1 block w-full rounded-md border-2 border-third py-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
-            onClick={handleSelectFile}
+            onClick={() => fileInputRef.current?.click()}
           >
             <span className='line-clamp-1 px-8'>
               {itemImage ? itemImage.name : 'Pilih File'}

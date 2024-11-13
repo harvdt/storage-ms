@@ -29,11 +29,7 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
   const formRef = React.useRef<HTMLFormElement>(null);
 
   // Fetch categories with items using the ID from params
-  const {
-    data: category,
-    loading: _categoryLoading,
-    error: _categoryError,
-  } = useFetch<CategoryWithItems>(
+  const { data: category } = useFetch<CategoryWithItems>(
     `http://localhost:8080/api/category/${params.id}/items`,
   );
 
@@ -56,12 +52,8 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
     return <div>Tidak ada kategori</div>;
   }
 
-  const handleRequestChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRequest(event.target.value);
-  };
-
   //   Form handling
-  const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!formRef.current || !selectedItem) return;
@@ -69,36 +61,31 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
     const formData = new FormData(formRef.current);
     const data = Object.fromEntries(formData.entries()) as TransactionField;
 
-    const currentTime = new Date().toISOString();
-    const notes = data.notes || ''; // Extract notes here
+    const basePayload = {
+      item_id: selectedItem.id,
+      quantity: Number(data.quantity),
+      employee_name: data.employee_name,
+      employee_department: data.employee_department,
+      employee_position: data.employee_position,
+      status: 'loaned',
+      time: new Date().toISOString(),
+      return_time: data.time ? new Date(data.time).toISOString() : '',
+      notes: data.notes || '',
+    };
 
     if (selectedRequest === 'loaned') {
-      const returnTime = data.time ? new Date(data.time).toISOString() : '';
-
       const loanPayload: TransactionPayload = {
-        item_id: selectedItem.id,
-        quantity: Number(data.quantity),
-        employee_name: data.employee_name,
-        employee_department: data.employee_department,
-        employee_position: data.employee_position,
+        ...basePayload,
         status: 'loaned',
-        time: currentTime,
-        loan_time: currentTime,
-        return_time: returnTime,
-        notes: notes,
+        loan_time: new Date().toISOString(),
+        return_time: data.time ? new Date(data.time).toISOString() : '',
       };
 
       await executeRequest(loanPayload);
     } else {
       const inquiryPayload: TransactionPayload = {
-        item_id: selectedItem.id,
-        quantity: Number(data.quantity),
-        employee_name: data.employee_name,
-        employee_department: data.employee_department,
-        employee_position: data.employee_position,
+        ...basePayload,
         status: 'inquired',
-        time: currentTime,
-        notes: notes,
       };
 
       await executeRequest(inquiryPayload);
@@ -182,11 +169,7 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
             <div className='space-y-4 rounded-lg bg-gradient-to-r from-main to-secondary p-6 font-lexend text-white'>
               <p className='text-3xl font-bold'>Form Pemesanan</p>
 
-              <form
-                ref={formRef}
-                onSubmit={(e) => e.preventDefault()}
-                className='space-y-4'
-              >
+              <form ref={formRef} onSubmit={handleSubmit} className='space-y-4'>
                 <div className='space-y-2'>
                   <label
                     htmlFor='employee_name'
@@ -247,7 +230,7 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
                     name='status'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                     value={selectedRequest}
-                    onChange={handleRequestChange}
+                    onChange={(e) => setSelectedRequest(e.target.value)}
                   >
                     <option value='loaned'>Peminjaman</option>
                     <option value='inquired'>Permintaan</option>
@@ -300,7 +283,7 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
 
                 {/* Action Buttons */}
                 <button
-                  onClick={handleSubmit}
+                  type='submit'
                   className='mt-4 w-full rounded-lg bg-white py-3 font-bold text-main shadow-light hover:bg-third hover:text-white hover:shadow-bold'
                 >
                   Pesan
