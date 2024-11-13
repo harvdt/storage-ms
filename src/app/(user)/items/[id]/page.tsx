@@ -72,7 +72,7 @@ export default function UserItemPage({ params }: { params: { id: string } }) {
     const data = Object.fromEntries(formData.entries()) as TransactionField;
 
     const currentTime = new Date().toISOString();
-    const notes = data.notes || ''; // Extract notes here
+    const notes = data.notes || '';
 
     if (selectedRequest === 'loaned') {
       const returnTime = data.time ? new Date(data.time).toISOString() : '';

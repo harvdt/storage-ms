@@ -167,9 +167,9 @@ export default function UserTransactionsPage() {
                         {transaction.employee_name}
                       </TableCell>
                       <TableCell className='py-2 text-center font-lexend font-medium'>
-                        {transaction.transaction_type === 'Loan'
+                        {transaction.transaction_type === 'loan'
                           ? 'Peminjaman'
-                          : transaction.transaction_type === 'Inquiry'
+                          : transaction.transaction_type === 'inquiry'
                             ? 'Permintaan'
                             : 'Add Item'}
                       </TableCell>
@@ -186,13 +186,12 @@ export default function UserTransactionsPage() {
                         <span
                           className={cn(
                             'rounded-full px-2 py-1 font-lexend text-xs font-medium',
-                            transaction.status === 'Approved'
+                            transaction.status === 'approved' ||
+                              transaction.status === 'Returned'
                               ? 'bg-green-100 text-green-800'
-                              : transaction.status === 'Ongoing'
-                                ? 'bg-blue-100 text-blue-800'
-                                : transaction.status === 'Pending'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800',
+                              : transaction.status === 'pending'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-red-100 text-red-800',
                           )}
                         >
                           {transaction.status}
