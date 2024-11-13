@@ -76,11 +76,21 @@ export type TransactionPayload = {
   notes: string;
 };
 
+export type AddItemField = {
+  employee_name: string;
+  employee_department: string;
+  employee_position: string;
+  notes: string;
+  item_name: string;
+  item_shelf: string;
+  item_category_id: string;
+  item_quantity: string;
+};
+
 export type AddItemPayload = {
   employee_name: string;
   employee_department: string;
   employee_position: string;
-  quantity: number;
   notes: string;
   item: {
     name: string;
