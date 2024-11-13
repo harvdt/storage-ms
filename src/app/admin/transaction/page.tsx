@@ -126,7 +126,7 @@ export default function AdminTransactionsPage() {
   );
 
   const { data: rejectResponse, executeRequest: rejectRequest } = useFetch(
-    `http://localhost:8080/api/transaction/${selectedTransactionId}/reject`,
+    `http://localhost:8080/api/transaction/${selectedTransactionId}/rejected`,
     'PATCH',
   );
 
@@ -232,20 +232,22 @@ export default function AdminTransactionsPage() {
                           Detail
                         </button>
                       </TableCell>
-                      <TableCell className='space-x-2 py-2 text-center'>
-                        <button
-                          className='rounded bg-green-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-green-700'
-                          onClick={() => handleApproveClick(transaction.uuid)}
-                        >
-                          Approve
-                        </button>
+                      <TableCell className='py-2 text-center'>
+                        <div className='flex items-center justify-center gap-x-2'>
+                          <button
+                            className='w-20 rounded bg-green-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-green-700'
+                            onClick={() => handleApproveClick(transaction.uuid)}
+                          >
+                            Approve
+                          </button>
 
-                        <button
-                          className='rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
-                          onClick={() => handleRejectClick(transaction.uuid)}
-                        >
-                          Reject
-                        </button>
+                          <button
+                            className='w-20 rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
+                            onClick={() => handleRejectClick(transaction.uuid)}
+                          >
+                            Reject
+                          </button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
