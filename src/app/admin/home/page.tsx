@@ -75,7 +75,7 @@ export default function AdminHomePage() {
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
               {filteredStorages.length > 0 ? (
                 filteredStorages.map((storage, index) => (
-                  <Link key={index} href={`/items/storage/${storage.id}`}>
+                  <Link key={index} href={`/admin/items/storage/${storage.id}`}>
                     <StoragesCard storage={storage} />
                   </Link>
                 ))

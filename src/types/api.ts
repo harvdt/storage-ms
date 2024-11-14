@@ -2,7 +2,7 @@ export type Item = {
   id: number;
   name: string;
   quantity: number;
-  categoryId: number;
+  category_id: number;
   shelf: string;
 };
 
@@ -38,6 +38,7 @@ export type Transaction = {
   uuid: string;
   transaction_type: string;
   globalID: string;
+  image: Uint8Array | string;
   employee_name: string;
   employee_department: string;
   employee_position: string;
@@ -45,10 +46,9 @@ export type Transaction = {
   quantity: number;
   status: string;
   time: string;
-  itemId: number;
-  item: Item;
-  loanTime: string;
-  returnTime: string;
+  item_request: Item;
+  loan_time: string;
+  return_time: string;
 };
 
 export type TransactionField = {
@@ -92,11 +92,9 @@ export type AddItemPayload = {
   employee_department: string;
   employee_position: string;
   notes: string;
-  item: {
-    name: string;
-    image: File;
-    shelf: string;
-    category_id: number;
-    quantity: number;
-  };
+  item_name: string;
+  image: File;
+  shelf: string;
+  category_id: number;
+  quantity: number;
 };

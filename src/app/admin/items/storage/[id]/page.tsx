@@ -3,10 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { CiEdit } from 'react-icons/ci';
 import { FaFilter } from 'react-icons/fa6';
 
 import useFetch from '@/hooks/useFetch';
 
+import EditCategoryModal from '@/components/admin/EditCategoryModal';
 import FilterModalAdmin from '@/components/admin/FilterModalAdmin';
 import AddCategoryModal from '@/components/global/AddCategoryModal';
 import AddItemModal from '@/components/global/AddItemModal';
@@ -25,6 +27,11 @@ export default function AdminStoragePage({
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] =
     React.useState(false);
   const [isAddItemModalOpen, setIsAddItemModalOpen] = React.useState(false);
+  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] =
+    React.useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState<
+    number | null
+  >(null);
   const [categoriesSearch, setCategoriesSearch] = React.useState('');
 
   const { data: storages } = useFetch<Storage[]>(
@@ -45,6 +52,11 @@ export default function AdminStoragePage({
 
   const toggleAddItemModal = () => {
     setIsAddItemModalOpen(!isAddItemModalOpen);
+  };
+
+  const toggleEditCategoryModal = (categoryId?: number) => {
+    setSelectedCategoryId(categoryId || null);
+    setIsEditCategoryModalOpen(!isEditCategoryModalOpen);
   };
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -117,24 +129,33 @@ export default function AdminStoragePage({
           {filteredCategories.length > 0 ? (
             <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7'>
               {filteredCategories.map((category, index) => (
-                <Link href={`/admin/items/${category.id}`} key={index}>
-                  <div className='flex aspect-square transform flex-col items-center justify-center rounded-lg bg-gradient-to-b from-main to-secondary p-4 text-white transition-transform duration-300 hover:scale-105 hover:shadow-lg'>
-                    <div className='relative aspect-square w-3/5'>
-                      <Image
-                        src={`data:image/jpeg;base64,${category.image}`}
-                        fill
-                        className='object-contain'
-                        alt={category.name}
-                      />
+                <div key={index} className='relative'>
+                  {' '}
+                  <Link href={`/admin/items/${category.id}`} passHref>
+                    <div className='relative flex aspect-square flex-col items-center justify-center rounded-lg bg-gradient-to-b from-main to-secondary p-4 text-white transition-transform duration-300 hover:scale-105 hover:shadow-lg'>
+                      <div className='relative aspect-square w-3/5'>
+                        <Image
+                          src={`data:image/jpeg;base64,${category.image}`}
+                          fill
+                          className='object-contain'
+                          alt={category.name}
+                        />
+                      </div>
+                      <p className='mt-2 line-clamp-1 text-center font-lexend font-bold'>
+                        {category.name}
+                      </p>
+                      <p className='line-clamp-1 text-center font-lexend text-sm'>
+                        {storage.name}
+                      </p>
                     </div>
-                    <p className='mt-2 line-clamp-1 text-center font-lexend font-bold'>
-                      {category.name}
-                    </p>
-                    <p className='line-clamp-1 text-center font-lexend text-sm'>
-                      {storage.name}
-                    </p>
-                  </div>
-                </Link>
+                  </Link>
+                  <button
+                    className='absolute -bottom-2 -right-2 z-10 rounded-full bg-white p-2 transition-transform duration-300 hover:scale-110 hover:shadow-lg'
+                    onClick={() => toggleEditCategoryModal(category.id)}
+                  >
+                    <CiEdit size={18} className='text-main' />
+                  </button>
+                </div>
               ))}
             </div>
           ) : (
@@ -157,6 +178,13 @@ export default function AdminStoragePage({
         isOpen={isAddItemModalOpen}
         onClose={toggleAddItemModal}
         storage={storage}
+      />
+
+      {/* Edit Category Modal */}
+      <EditCategoryModal
+        isOpen={isEditCategoryModalOpen}
+        onClose={() => toggleEditCategoryModal()}
+        categoryId={selectedCategoryId}
       />
 
       {/* Filter Modal */}

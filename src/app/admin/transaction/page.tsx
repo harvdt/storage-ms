@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useState } from 'react';
 
 import { capitalize, cn, formatDate } from '@/lib/utils';
@@ -52,19 +53,73 @@ const DetailModal = ({
       onClick={onClick}
     >
       <div
-        className='relative w-[28rem] rounded-lg bg-white p-6 shadow-lg'
+        className='relative w-[28rem] rounded-lg bg-white p-8 shadow-lg'
         onClick={(e) => e.stopPropagation()}
       >
-        <p className='text-xl font-bold'>Detail Transaction</p>
-        <hr className='my-4' />
-        <div className='mb-4 space-y-2'>
-          <p>Nama Item: {transaction.item.name}</p>
-          <p>Jumlah Permintaan: {transaction.quantity}</p>
-          <p>Jumlah Item Tersedia: {transaction.item.quantity}</p>
-          <p>Notes: {transaction.notes}</p>
+        <p className='mb-6 text-2xl font-bold text-gray-800'>
+          Detail Transaction
+        </p>
+        <hr className='mb-6 border-gray-300' />
+
+        <div className='space-y-4 text-gray-700'>
+          <p className='text-center font-lexend text-xl font-bold'>
+            {transaction.transaction_type === 'loan'
+              ? 'Peminjaman'
+              : transaction.transaction_type === 'inquiry'
+                ? 'Permintaan'
+                : 'Add Item'}
+          </p>
+
+          {(transaction.transaction_type === '' ||
+            transaction.transaction_type === 'insert') && (
+            <div>
+              <p className='font-semibold text-gray-800'>Foto Bukti:</p>
+              <div className='mt-2'>
+                <Image
+                  src={`data:image/jpeg;base64,${transaction.image}`}
+                  alt={`Image for ${transaction.employee_name}`}
+                  width={120}
+                  height={120}
+                  className='rounded-md border border-gray-200'
+                />
+              </div>
+            </div>
+          )}
+
+          <p>
+            <span className='font-semibold'>Nama Item:</span>{' '}
+            {transaction?.item_request?.name}
+          </p>
+
+          <p>
+            <span className='font-semibold'>Jumlah Permintaan:</span>{' '}
+            {transaction?.quantity}
+          </p>
+
+          <p>
+            <span className='font-semibold'>Jumlah Item Tersedia:</span>{' '}
+            {transaction?.item_request?.quantity}
+          </p>
+
+          <p>
+            <span className='font-semibold'>Rak Item:</span>{' '}
+            {transaction?.item_request?.shelf}
+          </p>
+
+          {transaction.transaction_type === 'loan' && (
+            <p>
+              <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
+              {formatDate(transaction?.return_time)}
+            </p>
+          )}
+
+          <p>
+            <span className='font-semibold'>Notes:</span> {transaction?.notes}
+          </p>
         </div>
+
         <button
-          className='mt-4 w-full rounded bg-main px-4 py-2 text-white'
+          className='hover:bg-main-dark mt-8 w-full rounded-lg bg-main px-4 py-3 font-medium text-white transition duration-150 hover:bg-secondary'
           onClick={toggleModal}
         >
           Close
@@ -83,9 +138,9 @@ export default function AdminTransactionsPage() {
   const [selectedTransactionId, setSelectedTransactionId] = useState<
     string | null
   >(null);
-  const [actionType, setActionType] = useState<'approve' | 'reject' | null>(
-    null,
-  );
+  const [actionType, setActionType] = useState<
+    'approve' | 'reject' | 'return' | null
+  >(null);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -130,17 +185,34 @@ export default function AdminTransactionsPage() {
     'PATCH',
   );
 
-  React.useEffect(() => {
-    if (selectedTransactionId && actionType) {
-      actionType === 'approve' ? approveRequest() : rejectRequest();
-    }
-  }, [selectedTransactionId, actionType, approveRequest, rejectRequest]);
+  const { data: returnResponse, executeRequest: returnRequest } = useFetch(
+    `http://localhost:8080/api/transaction/${selectedTransactionId}/returned`,
+    'PATCH',
+  );
 
   React.useEffect(() => {
-    if (approveResponse || rejectResponse) {
+    if (selectedTransactionId && actionType) {
+      if (actionType === 'approve') {
+        approveRequest();
+      } else if (actionType === 'reject') {
+        rejectRequest();
+      } else if (actionType === 'return') {
+        returnRequest();
+      }
+    }
+  }, [
+    selectedTransactionId,
+    actionType,
+    approveRequest,
+    rejectRequest,
+    returnRequest,
+  ]);
+
+  React.useEffect(() => {
+    if (approveResponse || rejectResponse || returnResponse) {
       window.location.reload();
     }
-  }, [approveResponse, rejectResponse]);
+  }, [approveResponse, rejectResponse, returnResponse]);
 
   const handleApproveClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
@@ -150,6 +222,11 @@ export default function AdminTransactionsPage() {
   const handleRejectClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
     setActionType('reject');
+  };
+
+  const handleReturnClick = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    setActionType('return');
   };
 
   return (
@@ -211,14 +288,15 @@ export default function AdminTransactionsPage() {
                           className={cn(
                             'rounded-full px-2 py-1 font-lexend text-xs font-medium',
                             transaction.status === 'approved' ||
-                              transaction.status === 'Approved' ||
-                              transaction.status === 'returned' ||
-                              transaction.status === 'Returned'
+                              transaction.status === 'Approved'
                               ? 'bg-green-100 text-green-800'
-                              : transaction.status === 'pending' ||
-                                  transaction.status === 'Pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800',
+                              : transaction.status === 'returned' ||
+                                  transaction.status === 'Returned'
+                                ? 'bg-blue-100 text-blue-800'
+                                : transaction.status === 'pending' ||
+                                    transaction.status === 'Pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800',
                           )}
                         >
                           {capitalize(transaction.status)}
@@ -234,19 +312,43 @@ export default function AdminTransactionsPage() {
                       </TableCell>
                       <TableCell className='py-2 text-center'>
                         <div className='flex items-center justify-center gap-x-2'>
-                          <button
-                            className='w-20 rounded bg-green-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-green-700'
-                            onClick={() => handleApproveClick(transaction.uuid)}
-                          >
-                            Approve
-                          </button>
-
-                          <button
-                            className='w-20 rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
-                            onClick={() => handleRejectClick(transaction.uuid)}
-                          >
-                            Reject
-                          </button>
+                          {transaction.status === 'pending' ||
+                          transaction.status === 'Pending' ? (
+                            <>
+                              <button
+                                className='w-20 rounded bg-green-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-green-700'
+                                onClick={() =>
+                                  handleApproveClick(transaction.uuid)
+                                }
+                              >
+                                Approve
+                              </button>
+                              <button
+                                className='w-20 rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
+                                onClick={() =>
+                                  handleRejectClick(transaction.uuid)
+                                }
+                              >
+                                Reject
+                              </button>
+                            </>
+                          ) : transaction.transaction_type === 'loan' &&
+                            transaction.status === 'approved' ? (
+                            <>
+                              <button
+                                className='w-20 rounded bg-blue-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-blue-700'
+                                onClick={() =>
+                                  handleReturnClick(transaction.uuid)
+                                }
+                              >
+                                Return
+                              </button>
+                            </>
+                          ) : (
+                            <div className='font-lexend font-bold text-orange-600'>
+                              COMPLETED
+                            </div>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

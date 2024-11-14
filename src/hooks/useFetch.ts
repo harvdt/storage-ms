@@ -35,7 +35,7 @@ const useFetch = <T>(
   data: T | null;
   loading: boolean;
   error: Error | null;
-  executeRequest: (body?: any) => Promise<void>;
+  executeRequest: (body?: any, isFormData?: boolean) => Promise<void>;
 } => {
   const [state, dispatch] = React.useReducer(dataFetchReducer<T>, {
     data: null,
@@ -44,23 +44,26 @@ const useFetch = <T>(
   });
 
   const executeRequest = React.useCallback(
-    async (body: any = initialBody) => {
+    async (body: any = initialBody, isFormData: boolean = false) => {
       dispatch({ type: 'LOADING' });
 
       try {
         const options: {
           method: FetchMethods;
-          headers: Record<string, string>;
+          headers?: Record<string, string>;
           body?: string;
         } = {
           method,
-          headers: {
-            'Content-Type': 'application/json',
-          },
         };
 
+        if (!isFormData) {
+          options.headers = {
+            'Content-Type': 'application/json',
+          };
+        }
+
         if (method !== 'GET' && body) {
-          options.body = JSON.stringify(body);
+          options.body = isFormData ? body : JSON.stringify(body);
         }
 
         const response = await fetch(url, options);
