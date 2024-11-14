@@ -1,3 +1,4 @@
+import { serialize } from 'object-to-formdata';
 import React, { FormEvent } from 'react';
 import { ImCancelCircle } from 'react-icons/im';
 
@@ -13,6 +14,7 @@ type Category = {
 };
 
 type Storage = {
+  id: string;
   categories: Category[];
 };
 
@@ -27,6 +29,10 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const [itemImage, setItemImage] = React.useState<File | null>(null);
+
+  const { data: storageCategories } = useFetch<Storage>(
+    `http://localhost:8080/api/storage/${storage?.id}/no-image`,
+  );
 
   const { data: response, executeRequest } = useFetch(
     'http://localhost:8080/api/transaction/insert',
@@ -61,16 +67,14 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
       employee_department: data.employee_department,
       employee_position: data.employee_position,
       notes: data.notes,
-      item: {
-        name: data.item_name,
-        image: itemImage,
-        shelf: data.item_shelf,
-        category_id: Number(data.item_category_id),
-        quantity: Number(data.item_quantity),
-      },
+      item_name: data.item_name,
+      item_image: itemImage,
+      shelf: data.item_shelf,
+      category_id: Number(data.item_category_id),
+      quantity: Number(data.item_quantity),
     };
 
-    await executeRequest(payload);
+    await executeRequest(serialize(payload), true);
   };
 
   if (!isOpen) return null;
@@ -193,11 +197,11 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
             Kategori Item
           </label>
           <select
-            id='item_category'
-            name='item_category'
+            id='item_category_id'
+            name='item_category_id'
             className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
           >
-            {storage?.categories?.map((category: Category) => (
+            {storageCategories?.categories?.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
