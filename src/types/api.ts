@@ -47,8 +47,8 @@ export type Transaction = {
   time: string;
   itemId: number;
   item: Item;
-  loanTime: string;
-  returnTime: string;
+  loan_time: string;
+  return_time: string;
 };
 
 export type TransactionField = {

@@ -79,8 +79,9 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
       <form
         ref={formRef}
-        className='w-full max-w-lg rounded-lg bg-white p-6'
+        className='w-full max-w-lg overflow-auto rounded-lg bg-white p-6'
         onSubmit={handleSubmit}
+        style={{ maxHeight: '90vh' }}
       >
         <div className='flex items-center justify-between border-b pb-4'>
           <h3 className='font-lexend text-xl font-semibold'>Tambah Item</h3>

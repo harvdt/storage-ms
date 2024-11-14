@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { FormEvent } from 'react';
+import { CiEdit } from 'react-icons/ci';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
 import { cn } from '@/lib/utils';
@@ -125,7 +126,14 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
           <div className='space-y-6'>
             {/* Product Info */}
             <div className='space-y-4 rounded-lg bg-gradient-to-r from-main to-secondary p-6 font-lexend text-white'>
-              <p className='text-2xl font-bold'>{category.name}</p>
+              <div className='flex justify-between'>
+                <p className='text-2xl font-bold'>{category.name}</p>
+
+                <button className='z-10 rounded-full bg-white p-2 transition-transform duration-300 hover:scale-110 hover:shadow-lg'>
+                  <CiEdit size={18} className='text-main' />
+                </button>
+              </div>
+
               <p className='text-sm'>
                 Stok:{' '}
                 {selectedItem
@@ -177,6 +185,7 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
                   >
                     Nama
                   </label>
+
                   <input
                     id='employee_name'
                     name='employee_name'
