@@ -2,7 +2,7 @@ export type Item = {
   id: number;
   name: string;
   quantity: number;
-  categoryId: number;
+  category_id: number;
   shelf: string;
 };
 
@@ -46,8 +46,7 @@ export type Transaction = {
   quantity: number;
   status: string;
   time: string;
-  itemId: number;
-  item: Item;
+  item_request: Item;
   loan_time: string;
   return_time: string;
 };

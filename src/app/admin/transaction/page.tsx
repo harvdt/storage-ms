@@ -88,33 +88,33 @@ const DetailModal = ({
 
           <p>
             <span className='font-semibold'>Nama Item:</span>{' '}
-            {transaction.item.name}
+            {transaction?.item_request?.name}
           </p>
 
           <p>
             <span className='font-semibold'>Jumlah Permintaan:</span>{' '}
-            {transaction.quantity}
+            {transaction?.quantity}
           </p>
 
           <p>
             <span className='font-semibold'>Jumlah Item Tersedia:</span>{' '}
-            {transaction.item.quantity}
+            {transaction?.item_request?.quantity}
           </p>
 
           <p>
             <span className='font-semibold'>Rak Item:</span>{' '}
-            {transaction.item.shelf}
+            {transaction?.item_request?.shelf}
           </p>
 
           {transaction.transaction_type === 'loan' && (
             <p>
               <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
-              {formatDate(transaction.return_time)}
+              {formatDate(transaction?.return_time)}
             </p>
           )}
 
           <p>
-            <span className='font-semibold'>Notes:</span> {transaction.notes}
+            <span className='font-semibold'>Notes:</span> {transaction?.notes}
           </p>
         </div>
 
@@ -215,11 +215,6 @@ export default function AdminTransactionsPage() {
   }, [approveResponse, rejectResponse, returnResponse]);
 
   const handleApproveClick = (transactionId: string) => {
-    setSelectedTransactionId(transactionId);
-    setActionType('approve');
-  };
-
-  const handleRejectClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
     setActionType('approve');
   };
