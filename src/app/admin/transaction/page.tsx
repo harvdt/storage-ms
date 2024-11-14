@@ -312,7 +312,8 @@ export default function AdminTransactionsPage() {
                       </TableCell>
                       <TableCell className='py-2 text-center'>
                         <div className='flex items-center justify-center gap-x-2'>
-                          {transaction.status === 'pending' ? (
+                          {transaction.status === 'pending' ||
+                          transaction.status === 'Pending' ? (
                             <>
                               <button
                                 className='w-20 rounded bg-green-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-green-700'

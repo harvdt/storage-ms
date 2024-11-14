@@ -14,7 +14,7 @@ type Category = {
 };
 
 type Storage = {
-  id: string;
+  id: number;
   categories: Category[];
 };
 
