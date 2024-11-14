@@ -76,7 +76,7 @@ const DetailModal = ({
               <p className='font-semibold text-gray-800'>Foto Bukti:</p>
               <div className='mt-2'>
                 <Image
-                  src='/public/images/pulpen.png' //{`data:image/jpeg;base64,${transaction.image}`}
+                  src={`data:image/jpeg;base64,${transaction.image}`}
                   alt={`Image for ${transaction.employee_name}`}
                   width={120}
                   height={120}

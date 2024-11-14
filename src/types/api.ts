@@ -38,6 +38,7 @@ export type Transaction = {
   uuid: string;
   transaction_type: string;
   globalID: string;
+  image: Uint8Array | string;
   employee_name: string;
   employee_department: string;
   employee_position: string;
@@ -93,7 +94,7 @@ export type AddItemPayload = {
   employee_position: string;
   notes: string;
   item_name: string;
-  item_image: File;
+  image: File;
   shelf: string;
   category_id: number;
   quantity: number;

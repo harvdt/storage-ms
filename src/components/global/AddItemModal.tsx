@@ -68,7 +68,7 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
       employee_position: data.employee_position,
       notes: data.notes,
       item_name: data.item_name,
-      item_image: itemImage,
+      image: itemImage,
       shelf: data.item_shelf,
       category_id: Number(data.item_category_id),
       quantity: Number(data.item_quantity),
