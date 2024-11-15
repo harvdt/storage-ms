@@ -9,6 +9,8 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { cn } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
+import EditItemModal from '@/components/admin/EditItemModal';
+
 import { divisi } from '../_data/Division';
 
 import {
@@ -17,15 +19,15 @@ import {
   TransactionPayload,
 } from '@/types/api';
 
-export default function AdminItemPage({ params }: { params: { id: string } }) {
+export default function AdminItemPage({ params }: { params: { id: number } }) {
   const [selectedItem, setSelectedItem] = React.useState<{
     id: number;
     name: string;
     quantity: number;
     shelf: string;
   } | null>(null);
-
   const [selectedRequest, setSelectedRequest] = React.useState('loaned');
+  const [isEditItemModalOpen, setIsEditItemModalOpen] = React.useState(false);
 
   const formRef = React.useRef<HTMLFormElement>(null);
 
@@ -93,6 +95,10 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
     }
   };
 
+  const toggleEditItemModal = () => {
+    setIsEditItemModalOpen(!isEditItemModalOpen);
+  };
+
   return (
     <main>
       <div className='relative mb-6 w-full rounded-lg px-20 py-16 shadow-lg'>
@@ -129,7 +135,10 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
               <div className='flex justify-between'>
                 <p className='text-2xl font-bold'>{category.name}</p>
 
-                <button className='z-10 rounded-full bg-white p-2 transition-transform duration-300 hover:scale-110 hover:shadow-lg'>
+                <button
+                  className='z-10 rounded-full bg-white p-2 transition-transform duration-300 hover:scale-110 hover:shadow-lg'
+                  onClick={toggleEditItemModal}
+                >
                   <CiEdit size={18} className='text-main' />
                 </button>
               </div>
@@ -302,6 +311,12 @@ export default function AdminItemPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
+
+      <EditItemModal
+        isOpen={isEditItemModalOpen}
+        onClose={() => toggleEditItemModal()}
+        categoryId={params.id}
+      />
     </main>
   );
 }

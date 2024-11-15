@@ -62,6 +62,9 @@ export default function AdminStoragePage({
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.currentTarget === event.target) {
       toggleFilterModal();
+      toggleAddCategoryModal();
+      toggleAddItemModal();
+      toggleEditCategoryModal();
     }
   };
 

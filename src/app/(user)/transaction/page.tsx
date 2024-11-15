@@ -1,8 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useState } from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, formatDate } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
 
 import ErrorState from '@/components/global/ErrorState';
@@ -30,6 +31,7 @@ const tableHeader = [
   'Tanggal Pemesanan',
   'Status',
   'Detail',
+  'Action',
 ];
 
 const DetailModal = ({
@@ -51,22 +53,73 @@ const DetailModal = ({
       onClick={onClick}
     >
       <div
-        className='relative w-[28rem] rounded-lg bg-white p-6 shadow-lg'
+        className='relative w-[28rem] rounded-lg bg-white p-8 shadow-lg'
         onClick={(e) => e.stopPropagation()}
       >
-        <p className='text-xl font-bold'>Detail Transaction</p>
-        <hr className='my-4' />
-        <div className='mb-4 space-y-2'>
-          <p>Nama Item: {transaction.item.name}</p>
+        <p className='mb-6 text-2xl font-bold text-gray-800'>
+          Detail Transaction
+        </p>
+        <hr className='mb-6 border-gray-300' />
 
-          <p>Jumlah Permintaan: {transaction.quantity}</p>
+        <div className='space-y-4 text-gray-700'>
+          <p className='text-center font-lexend text-xl font-bold'>
+            {transaction.transaction_type === 'loan'
+              ? 'Peminjaman'
+              : transaction.transaction_type === 'inquiry'
+                ? 'Permintaan'
+                : 'Add Item'}
+          </p>
 
-          <p>Jumlah Item Tersedia: {transaction.item.quantity}</p>
+          {(transaction.transaction_type === '' ||
+            transaction.transaction_type === 'insert') && (
+            <div>
+              <p className='font-semibold text-gray-800'>Foto Bukti:</p>
+              <div className='mt-2'>
+                <Image
+                  src={`data:image/jpeg;base64,${transaction.image}`}
+                  alt={`Image for ${transaction.employee_name}`}
+                  width={120}
+                  height={120}
+                  className='rounded-md border border-gray-200'
+                />
+              </div>
+            </div>
+          )}
 
-          <p>Notes: {transaction.notes}</p>
+          <p>
+            <span className='font-semibold'>Nama Item:</span>{' '}
+            {transaction?.item_request?.name}
+          </p>
+
+          <p>
+            <span className='font-semibold'>Jumlah Permintaan:</span>{' '}
+            {transaction?.quantity}
+          </p>
+
+          <p>
+            <span className='font-semibold'>Jumlah Item Tersedia:</span>{' '}
+            {transaction?.item_request?.quantity}
+          </p>
+
+          <p>
+            <span className='font-semibold'>Rak Item:</span>{' '}
+            {transaction?.item_request?.shelf}
+          </p>
+
+          {transaction.transaction_type === 'loan' && (
+            <p>
+              <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
+              {formatDate(transaction?.return_time)}
+            </p>
+          )}
+
+          <p>
+            <span className='font-semibold'>Notes:</span> {transaction?.notes}
+          </p>
         </div>
+
         <button
-          className='mt-4 w-full rounded bg-main px-4 py-2 text-white'
+          className='hover:bg-main-dark mt-8 w-full rounded-lg bg-main px-4 py-3 font-medium text-white transition duration-150 hover:bg-secondary'
           onClick={toggleModal}
         >
           Close
