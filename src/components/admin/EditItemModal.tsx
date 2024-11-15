@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import React from 'react';
 import { ImCancelCircle } from 'react-icons/im';
 
 import useFetch from '@/hooks/useFetch';
@@ -12,22 +12,21 @@ interface EditItemModalProps {
 }
 
 const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
-  const [categoryData, setCategoryData] = useState<CategoryWithItems | null>(
-    null,
-  );
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [categoryData, setCategoryData] =
+    React.useState<CategoryWithItems | null>(null);
+  const [selectedItem, setSelectedItem] = React.useState<Item | null>(null);
 
   const { data: category } = useFetch<CategoryWithItems>(
     `http://localhost:8080/api/category/${categoryId}/items`,
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (category) {
       setCategoryData(category);
     }
   }, [category]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (category && category.items.length > 0) {
       setSelectedItem(category.items[0]);
     }
