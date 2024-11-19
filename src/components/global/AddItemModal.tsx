@@ -147,6 +147,31 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
           />
         </div>
 
+        {/* Kategori Item */}
+        <div className='mt-4'>
+          <label
+            htmlFor='item_category'
+            className='block font-lexend text-sm font-semibold text-main'
+          >
+            Kategori Item
+          </label>
+
+          <select
+            id='item_category_id'
+            name='item_category_id'
+            className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
+          >
+            {storageCategories?.categories
+              ?.slice()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
+        </div>
+
         {/* Nama Item */}
         <div className='mt-4'>
           <label
@@ -187,27 +212,6 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
             onChange={handleFileChange}
             className='hidden'
           />
-        </div>
-
-        {/* Kategori Item */}
-        <div className='mt-4'>
-          <label
-            htmlFor='item_category'
-            className='block font-lexend text-sm font-semibold text-main'
-          >
-            Kategori Item
-          </label>
-          <select
-            id='item_category_id'
-            name='item_category_id'
-            className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
-          >
-            {storageCategories?.categories?.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
         </div>
 
         {/* Rak Item */}
@@ -261,7 +265,7 @@ const AddItemModal = ({ isOpen, onClose, storage }: AddItemModalProps) => {
         <div className='mt-6 flex justify-end'>
           <button
             type='submit'
-            className='rounded-lg bg-main px-4 py-2 text-white shadow hover:bg-secondary'
+            className='rounded-lg bg-main px-4 py-2 font-lexend text-white shadow hover:bg-secondary'
           >
             Tambah
           </button>

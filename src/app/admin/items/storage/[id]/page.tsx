@@ -8,9 +8,9 @@ import { FaFilter } from 'react-icons/fa6';
 
 import useFetch from '@/hooks/useFetch';
 
+import AddCategoryModal from '@/components/admin/AddCategoryModal';
 import EditCategoryModal from '@/components/admin/EditCategoryModal';
 import FilterModalAdmin from '@/components/admin/FilterModalAdmin';
-import AddCategoryModal from '@/components/global/AddCategoryModal';
 import AddItemModal from '@/components/global/AddItemModal';
 import ErrorState from '@/components/global/ErrorState';
 import NoItemsFound from '@/components/global/NoItemsFound';
@@ -21,7 +21,7 @@ import { Storage } from '@/types/api';
 export default function AdminStoragePage({
   params,
 }: {
-  params: { id: string };
+  params: { id: number };
 }) {
   const [isFilterModalOpen, setIsFilterModalOpen] = React.useState(false);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] =
@@ -62,9 +62,6 @@ export default function AdminStoragePage({
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.currentTarget === event.target) {
       toggleFilterModal();
-      toggleAddCategoryModal();
-      toggleAddItemModal();
-      toggleEditCategoryModal();
     }
   };
 
@@ -174,6 +171,7 @@ export default function AdminStoragePage({
       <AddCategoryModal
         isOpen={isAddCategoryModalOpen}
         onClose={toggleAddCategoryModal}
+        storageId={params.id}
       />
 
       {/* Add Item Modal */}

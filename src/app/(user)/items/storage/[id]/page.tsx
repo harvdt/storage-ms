@@ -7,7 +7,6 @@ import { FaFilter } from 'react-icons/fa6';
 
 import useFetch from '@/hooks/useFetch';
 
-import AddCategoryModal from '@/components/global/AddCategoryModal';
 import AddItemModal from '@/components/global/AddItemModal';
 import ErrorState from '@/components/global/ErrorState';
 import NoItemsFound from '@/components/global/NoItemsFound';
@@ -22,8 +21,6 @@ export default function UserStoragePage({
   params: { id: string };
 }) {
   const [isFilterModalOpen, setIsFilterModalOpen] = React.useState(false);
-  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] =
-    React.useState(false);
   const [isAddItemModalOpen, setIsAddItemModalOpen] = React.useState(false);
   const [categoriesSearch, setCategoriesSearch] = React.useState('');
 
@@ -37,10 +34,6 @@ export default function UserStoragePage({
 
   const toggleFilterModal = () => {
     setIsFilterModalOpen(!isFilterModalOpen);
-  };
-
-  const toggleAddCategoryModal = () => {
-    setIsAddCategoryModalOpen(!isAddCategoryModalOpen);
   };
 
   const toggleAddItemModal = () => {
@@ -104,14 +97,7 @@ export default function UserStoragePage({
           </div>
 
           {isAddButtonShown() && (
-            <div className='space-x-4'>
-              <button
-                onClick={toggleAddCategoryModal}
-                className='rounded-lg bg-main px-4 py-2 font-lexend font-semibold text-white shadow-light hover:bg-third hover:shadow-bold'
-              >
-                Add Category
-              </button>
-
+            <div>
               <button
                 onClick={toggleAddItemModal}
                 className='rounded-lg bg-main px-4 py-2 font-lexend font-semibold text-white shadow-light hover:bg-third hover:shadow-bold'
@@ -154,12 +140,6 @@ export default function UserStoragePage({
           )}
         </div>
       </div>
-
-      {/* Add Category Modal */}
-      <AddCategoryModal
-        isOpen={isAddCategoryModalOpen}
-        onClose={toggleAddCategoryModal}
-      />
 
       {/* Add Item Modal */}
       <AddItemModal

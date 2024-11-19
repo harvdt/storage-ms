@@ -30,7 +30,7 @@ const tableHeader = [
   'Jabatan',
   'Tanggal Pemesanan',
   'Status',
-  'Detail',
+  'Ticket',
   'Action',
 ];
 
@@ -77,7 +77,7 @@ const DetailModal = ({
               <div className='mt-2'>
                 <Image
                   src={`data:image/jpeg;base64,${transaction.image}`}
-                  alt={`Image for ${transaction.employee_name}`}
+                  alt={`Image from ${transaction.employee_name}`}
                   width={120}
                   height={120}
                   className='rounded-md border border-gray-200'
@@ -94,11 +94,6 @@ const DetailModal = ({
           <p>
             <span className='font-semibold'>Jumlah Permintaan:</span>{' '}
             {transaction?.quantity}
-          </p>
-
-          <p>
-            <span className='font-semibold'>Jumlah Item Tersedia:</span>{' '}
-            {transaction?.item_request?.quantity}
           </p>
 
           <p>
@@ -307,7 +302,7 @@ export default function AdminTransactionsPage() {
                           className='rounded bg-main px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-secondary'
                           onClick={() => handleDetailClick(transaction)}
                         >
-                          Detail
+                          Ticket
                         </button>
                       </TableCell>
                       <TableCell className='py-2 text-center'>
