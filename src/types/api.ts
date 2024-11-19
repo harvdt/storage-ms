@@ -98,3 +98,12 @@ export type AddItemPayload = {
   category_id: number;
   quantity: number;
 };
+
+export type AddCategoryField = {
+  name: string;
+};
+
+export type AddCategoryPayload = AddCategoryField & {
+  image: File;
+  storage_id: number;
+};
