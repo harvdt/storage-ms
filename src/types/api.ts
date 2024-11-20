@@ -49,6 +49,8 @@ export type Transaction = {
   item_request: Item;
   loan_time: string;
   return_time: string;
+  completed_time: string;
+  returned_time: string;
 };
 
 export type TransactionField = {

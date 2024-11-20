@@ -29,6 +29,7 @@ const tableHeader = [
   'Divisi',
   'Jabatan',
   'Tanggal Pemesanan',
+  'Tanggal Complete',
   'Status',
   'Ticket',
   'Action',
@@ -44,7 +45,7 @@ export default function AdminTransactionsPage() {
     string | null
   >(null);
   const [actionType, setActionType] = React.useState<
-    'approve' | 'reject' | 'return' | null
+    'approve' | 'reject' | 'complete' | 'incomplete' | 'return' | null
   >(null);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -94,6 +95,11 @@ export default function AdminTransactionsPage() {
     'PATCH',
   );
 
+  const { data: completeResponse, executeRequest: completeRequest } = useFetch(
+    `http://localhost:8080/api/transaction/${selectedTransactionId}/completed`,
+    'PATCH',
+  );
+
   const { data: returnResponse, executeRequest: returnRequest } = useFetch(
     `http://localhost:8080/api/transaction/${selectedTransactionId}/returned`,
     'PATCH',
@@ -105,6 +111,8 @@ export default function AdminTransactionsPage() {
         approveRequest();
       } else if (actionType === 'reject') {
         rejectRequest();
+      } else if (actionType === 'complete') {
+        completeRequest();
       } else if (actionType === 'return') {
         returnRequest();
       }
@@ -114,14 +122,20 @@ export default function AdminTransactionsPage() {
     actionType,
     approveRequest,
     rejectRequest,
+    completeRequest,
     returnRequest,
   ]);
 
   React.useEffect(() => {
-    if (approveResponse || rejectResponse || returnResponse) {
+    if (
+      approveResponse ||
+      rejectResponse ||
+      completeResponse ||
+      returnResponse
+    ) {
       window.location.reload();
     }
-  }, [approveResponse, rejectResponse, returnResponse]);
+  }, [approveResponse, rejectResponse, completeResponse, returnResponse]);
 
   const handleApproveClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
@@ -131,6 +145,11 @@ export default function AdminTransactionsPage() {
   const handleRejectClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
     setActionType('reject');
+  };
+
+  const handleCompleteClick = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    setActionType('complete');
   };
 
   const handleReturnClick = (transactionId: string) => {
@@ -198,19 +217,30 @@ export default function AdminTransactionsPage() {
                         {formatDate(transaction.time)}
                       </TableCell>
                       <TableCell className='py-2 text-center font-lexend font-medium'>
+                        {transaction.completed_time === null
+                          ? '-'
+                          : formatDate(transaction.completed_time)}
+                      </TableCell>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
                         <span
                           className={cn(
                             'rounded-full px-2 py-1 font-lexend text-xs font-medium',
-                            transaction.status === 'approved' ||
-                              transaction.status === 'Approved'
-                              ? 'bg-green-100 text-green-800'
-                              : transaction.status === 'returned' ||
-                                  transaction.status === 'Returned'
-                                ? 'bg-blue-100 text-blue-800'
-                                : transaction.status === 'pending' ||
-                                    transaction.status === 'Pending'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800',
+                            transaction.status === 'pending' ||
+                              transaction.status === 'Pending'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : transaction.status === 'approved' ||
+                                  transaction.status === 'Approved'
+                                ? 'bg-green-100 text-green-800'
+                                : transaction.status === 'completed' ||
+                                    transaction.status === 'Completed'
+                                  ? 'bg-orange-100 text-orange-800'
+                                  : transaction.status === 'incomplete' ||
+                                      transaction.status === 'Incomplete'
+                                    ? 'bg-slate-100 text-slate-800'
+                                    : transaction.status === 'returned' ||
+                                        transaction.status === 'Returned'
+                                      ? 'bg-blue-100 text-blue-800'
+                                      : 'bg-red-100 text-red-800',
                           )}
                         >
                           {capitalize(transaction.status)}
@@ -246,8 +276,28 @@ export default function AdminTransactionsPage() {
                                 Reject
                               </button>
                             </>
+                          ) : transaction.status === 'approved' ||
+                            transaction.status === 'Approved' ? (
+                            <>
+                              <button
+                                className='w-20 rounded bg-orange-600 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-orange-700'
+                                onClick={() =>
+                                  handleCompleteClick(transaction.uuid)
+                                }
+                              >
+                                Complete
+                              </button>
+                              <button
+                                className='w-20 rounded bg-slate-600 px-1 py-1.5 font-lexend text-xs font-bold text-white transition duration-300 hover:bg-slate-700'
+                                // onClick={() =>
+                                //   handleCompleteClick(transaction.uuid)
+                                // }
+                              >
+                                Incomplete
+                              </button>
+                            </>
                           ) : transaction.transaction_type === 'loan' &&
-                            transaction.status === 'approved' ? (
+                            transaction.status === 'completed' ? (
                             <>
                               <button
                                 className='w-20 rounded bg-blue-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-blue-700'

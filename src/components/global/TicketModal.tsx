@@ -72,20 +72,26 @@ const TicketModal: React.FC<TicketModalProps> = ({
           </p>
 
           <p>
-            <span className='font-semibold'>Status Pemesanan:</span>
+            <span className='font-semibold'>Status Pemesanan: </span>
             <span
               className={cn(
                 'rounded-full px-2 py-1 font-lexend text-sm font-medium',
-                transaction.status === 'approved' ||
-                  transaction.status === 'Approved'
-                  ? 'bg-green-100 text-green-800'
-                  : transaction.status === 'returned' ||
-                      transaction.status === 'Returned'
-                    ? 'bg-blue-100 text-blue-800'
-                    : transaction.status === 'pending' ||
-                        transaction.status === 'Pending'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800',
+                transaction.status === 'pending' ||
+                  transaction.status === 'Pending'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : transaction.status === 'approved' ||
+                      transaction.status === 'Approved'
+                    ? 'bg-green-100 text-green-800'
+                    : transaction.status === 'completed' ||
+                        transaction.status === 'Completed'
+                      ? 'bg-orange-100 text-orange-800'
+                      : transaction.status === 'incomplete' ||
+                          transaction.status === 'Incomplete'
+                        ? 'bg-slate-100 text-slate-800'
+                        : transaction.status === 'returned' ||
+                            transaction.status === 'Returned'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-red-100 text-red-800',
               )}
             >
               {capitalize(transaction.status)}
@@ -96,6 +102,18 @@ const TicketModal: React.FC<TicketModalProps> = ({
             <p>
               <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
               {formatDate(transaction?.return_time)}
+            </p>
+          )}
+
+          {transaction.transaction_type === 'loan' &&
+          transaction.returned_time === null ? (
+            <p>
+              <span className='font-semibold'>Tanggal Kembali Barang:</span> -
+            </p>
+          ) : (
+            <p>
+              <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
+              {formatDate(transaction?.returned_time)}
             </p>
           )}
 
