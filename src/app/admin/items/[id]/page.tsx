@@ -61,6 +61,11 @@ export default function AdminItemPage({ params }: { params: { id: number } }) {
 
     if (!formRef.current || !selectedItem) return;
 
+    if (selectedItem.quantity <= 0) {
+      alert('Stok barang habis!');
+      return;
+    }
+
     const formData = new FormData(formRef.current);
     const data = Object.fromEntries(formData.entries()) as TransactionField;
 
