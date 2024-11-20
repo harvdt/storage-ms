@@ -1,7 +1,6 @@
 'use client';
 
-import Image from 'next/image';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { capitalize, cn, formatDate } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
@@ -10,6 +9,7 @@ import ErrorState from '@/components/global/ErrorState';
 import LoadingState from '@/components/global/LoadingState';
 import NoItemsFound from '@/components/global/NoItemsFound';
 import SearchInput from '@/components/global/SearchInput';
+import TicketModal from '@/components/global/TicketModal';
 import {
   Table,
   TableBody,
@@ -34,106 +34,16 @@ const tableHeader = [
   'Action',
 ];
 
-const DetailModal = ({
-  isOpen,
-  toggleModal,
-  transaction,
-  onClick,
-}: {
-  isOpen: boolean;
-  toggleModal: () => void;
-  transaction: Transaction | null;
-  onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
-}) => {
-  if (!isOpen || !transaction) return null;
-
-  return (
-    <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 font-lexend'
-      onClick={onClick}
-    >
-      <div
-        className='relative w-[28rem] rounded-lg bg-white p-8 shadow-lg'
-        onClick={(e) => e.stopPropagation()}
-      >
-        <p className='mb-6 text-2xl font-bold text-gray-800'>
-          Detail Transaction
-        </p>
-        <hr className='mb-6 border-gray-300' />
-
-        <div className='space-y-4 text-gray-700'>
-          <p className='text-center font-lexend text-xl font-bold'>
-            {transaction.transaction_type === 'loan'
-              ? 'Peminjaman'
-              : transaction.transaction_type === 'inquiry'
-                ? 'Permintaan'
-                : 'Add Item'}
-          </p>
-
-          {(transaction.transaction_type === '' ||
-            transaction.transaction_type === 'insert') && (
-            <div>
-              <p className='font-semibold text-gray-800'>Foto Bukti:</p>
-              <div className='mt-2'>
-                <Image
-                  src={`data:image/jpeg;base64,${transaction.image}`}
-                  alt={`Image from ${transaction.employee_name}`}
-                  width={120}
-                  height={120}
-                  className='rounded-md border border-gray-200'
-                />
-              </div>
-            </div>
-          )}
-
-          <p>
-            <span className='font-semibold'>Nama Item:</span>{' '}
-            {transaction?.item_request?.name}
-          </p>
-
-          <p>
-            <span className='font-semibold'>Jumlah Permintaan:</span>{' '}
-            {transaction?.quantity}
-          </p>
-
-          <p>
-            <span className='font-semibold'>Rak Item:</span>{' '}
-            {transaction?.item_request?.shelf}
-          </p>
-
-          {transaction.transaction_type === 'loan' && (
-            <p>
-              <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
-              {formatDate(transaction?.return_time)}
-            </p>
-          )}
-
-          <p>
-            <span className='font-semibold'>Notes:</span> {transaction?.notes}
-          </p>
-        </div>
-
-        <button
-          className='hover:bg-main-dark mt-8 w-full rounded-lg bg-main px-4 py-3 font-medium text-white transition duration-150 hover:bg-secondary'
-          onClick={toggleModal}
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  );
-};
-
 export default function AdminTransactionsPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
-  const [transactionSearch, setTransactionSearch] = useState('');
-  const [transactionResult, setTransactionResult] = useState('');
-  const [selectedTransactionId, setSelectedTransactionId] = useState<
+    React.useState<Transaction | null>(null);
+  const [transactionSearch, setTransactionSearch] = React.useState('');
+  const [transactionResult, setTransactionResult] = React.useState('');
+  const [selectedTransactionId, setSelectedTransactionId] = React.useState<
     string | null
   >(null);
-  const [actionType, setActionType] = useState<
+  const [actionType, setActionType] = React.useState<
     'approve' | 'reject' | 'return' | null
   >(null);
 
@@ -169,6 +79,10 @@ export default function AdminTransactionsPage() {
           .includes(transactionResult.toLowerCase()),
       )
     : [];
+
+  const sortedTransactions = [...filteredTransactions].sort(
+    (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
+  );
 
   const { data: approveResponse, executeRequest: approveRequest } = useFetch(
     `http://localhost:8080/api/transaction/${selectedTransactionId}/approved`,
@@ -233,6 +147,11 @@ export default function AdminTransactionsPage() {
         containerStyles='w-full'
       />
 
+      <p className='font-lexend text-2xl font-semibold text-white'>
+        Pengambilan berlaku di hari yang sama dengan pemesanan serta di jam
+        kerja (08:00-16:00)
+      </p>
+
       <div className='max-h-screen overflow-hidden rounded-lg bg-white shadow-lg'>
         {transactionsLoading ? (
           <LoadingState />
@@ -256,8 +175,8 @@ export default function AdminTransactionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredTransactions.length > 0 ? (
-                  filteredTransactions.map((transaction, index) => (
+                {sortedTransactions.length > 0 ? (
+                  sortedTransactions.map((transaction, index) => (
                     <TableRow key={index}>
                       <TableCell className='py-2 text-center font-lexend font-medium'>
                         {transaction.employee_name}
@@ -361,7 +280,8 @@ export default function AdminTransactionsPage() {
               </TableBody>
             </Table>
 
-            <DetailModal
+            {/* Ticket modal */}
+            <TicketModal
               isOpen={isModalOpen}
               toggleModal={toggleModal}
               transaction={selectedTransaction}
