@@ -50,8 +50,7 @@ const TicketModal: React.FC<TicketModalProps> = ({
                 : 'Add Item'}
           </p>
 
-          {(transaction.transaction_type === '' ||
-            transaction.transaction_type === 'insert') && (
+          {transaction.transaction_type === 'insert' && (
             <div>
               <p className='font-semibold text-gray-800'>Foto Bukti:</p>
               <div className='mt-2'>
@@ -100,22 +99,19 @@ const TicketModal: React.FC<TicketModalProps> = ({
 
           {transaction.transaction_type === 'loan' && (
             <p>
-              <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
+              <span className='font-semibold'>Rencana Pengembalian:</span>{' '}
               {formatDate(transaction?.return_time)}
             </p>
           )}
 
-          {transaction.transaction_type === 'loan' &&
-          transaction.returned_time === null ? (
+          {transaction.transaction_type === 'loan' ? (
             <p>
-              <span className='font-semibold'>Tanggal Kembali Barang:</span> -
+              <span className='font-semibold'>Tanggal Dikembalikan:</span>{' '}
+              {transaction.returned_time === null
+                ? '-'
+                : formatDate(transaction.returned_time)}
             </p>
-          ) : (
-            <p>
-              <span className='font-semibold'>Tanggal Pengembalian:</span>{' '}
-              {formatDate(transaction?.returned_time)}
-            </p>
-          )}
+          ) : null}
 
           <p>
             <span className='font-semibold'>Kategori Item:</span>{' '}
