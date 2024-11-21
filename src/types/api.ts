@@ -109,15 +109,3 @@ export type AddCategoryPayload = AddCategoryField & {
   image: File;
   storage_id: number;
 };
-
-export type EditItemField = {
-  name: string;
-  quantity: string;
-  shelf: string;
-};
-
-export type EditItemPayload = {
-  name: string;
-  quantity: number;
-  shelf: string;
-};
