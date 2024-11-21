@@ -23,15 +23,49 @@ const EditCategoryModal = ({
     `http://localhost:8080/api/category/${categoryId}`,
   );
 
+  const { data: deleteResponse, executeRequest: deleteCategory } = useFetch(
+    `http://localhost:8080/api/category/${categoryId}`,
+    'DELETE',
+  );
+
+  const { data: editResponse, executeRequest: editCategory } = useFetch(
+    `http://localhost:8080/api/category/${categoryId}`,
+    'PATCH',
+  );
+
   React.useEffect(() => {
     if (category) {
       setCategoryData(category);
     }
   }, [category]);
 
-  if (!isOpen) return null;
-  if (!category) return null;
-  if (!categoryData) return null;
+  React.useEffect(() => {
+    if (deleteResponse || editResponse) {
+      window.location.reload();
+    }
+  }, [deleteResponse, editResponse]);
+
+  if (!isOpen || !category || !categoryData) return null;
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    const description = 'Apakah anda yakin ingin menghapus category ini?';
+
+    if (confirm(description)) {
+      await deleteCategory();
+    }
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (categoryData.name !== category.name) {
+      const payload = { name: categoryData.name };
+
+      await editCategory(payload);
+    }
+  };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCategoryData({ ...categoryData, name: e.target.value });
@@ -51,13 +85,15 @@ const EditCategoryModal = ({
           <div className='flex items-center justify-between'>
             <p className='font-lexend text-2xl font-bold'>{category.name}</p>
 
-            <FaTrashAlt
-              size={22}
-              className='cursor-pointer text-main hover:text-secondary'
-            />
+            <button onClick={handleDelete}>
+              <FaTrashAlt
+                size={22}
+                className='cursor-pointer text-main hover:text-secondary'
+              />
+            </button>
           </div>
 
-          <form>
+          <form onSubmit={handleEdit}>
             <label
               htmlFor='name'
               className='block font-lexend text-sm font-semibold text-main'
