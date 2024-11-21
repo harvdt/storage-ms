@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
 import { ImCancelCircle } from 'react-icons/im';
 
 import useFetch from '@/hooks/useFetch';
@@ -20,6 +21,16 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
     `http://localhost:8080/api/category/${categoryId}/items`,
   );
 
+  const { data: deleteResponse, executeRequest: deleteItem } = useFetch(
+    `http://localhost:8080/api/item/${selectedItem?.id}`,
+    'DELETE',
+  );
+
+  const { data: editResponse, executeRequest: editItem } = useFetch(
+    `http://localhost:8080/api/item/${selectedItem?.id}`,
+    'PATCH',
+  );
+
   React.useEffect(() => {
     if (category) {
       setCategoryData(category);
@@ -32,18 +43,38 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
     }
   }, [category]);
 
-  if (!isOpen) return null;
-  if (!category || !categoryData) return null;
+  React.useEffect(() => {
+    if (deleteResponse || editResponse) {
+      window.location.reload();
+    }
+  }, [deleteResponse, editResponse]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    if (selectedItem) {
-      setSelectedItem({
-        ...selectedItem,
-        [name]: name === 'quantity' ? parseInt(value, 10) || 0 : value,
-      });
+  if (!isOpen || !category || !categoryData) return null;
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    const description = 'Apakah anda yakin ingin menghapus item ini?';
+
+    if (confirm(description)) {
+      await deleteItem();
+    }
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const originalItem = categoryData.items.find(
+      (i) => i.id === selectedItem?.id,
+    );
+
+    if (
+      originalItem &&
+      selectedItem &&
+      originalItem.name !== selectedItem.name
+    ) {
+      const payload = { name: selectedItem.name };
+      await editItem(payload);
     }
   };
 
@@ -52,6 +83,15 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
     const item =
       category.items.find((i) => i.name === selectedItemName) || null;
     setSelectedItem(item);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (selectedItem) {
+      setSelectedItem({
+        ...selectedItem,
+        name: e.target.value,
+      });
+    }
   };
 
   return (
@@ -65,7 +105,7 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
         </div>
 
         <div className='mt-2 space-y-4'>
-          <p className='text-center font-lexend text-xl font-bold'>
+          <p className='text-center font-lexend text-2xl font-bold'>
             {category.name}
           </p>
 
@@ -76,18 +116,27 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
             >
               Select Item
             </label>
-            <select
-              id='item-select'
-              value={selectedItem?.name || ''}
-              onChange={handleItemSelect}
-              className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
-            >
-              {category.items.map((item) => (
-                <option key={item.id} value={item.name}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            <div className='flex items-center justify-between gap-x-4'>
+              <select
+                id='item-select'
+                value={selectedItem?.name || ''}
+                onChange={handleItemSelect}
+                className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
+              >
+                {category.items.map((item) => (
+                  <option key={item.id} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+
+              <button onClick={handleDelete}>
+                <FaTrashAlt
+                  size={32}
+                  className='cursor-pointer text-main hover:text-secondary'
+                />
+              </button>
+            </div>
 
             <label
               htmlFor='name'
@@ -100,44 +149,14 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
               name='name'
               type='text'
               value={selectedItem?.name || ''}
-              onChange={handleChange}
-              className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
-            />
-
-            <label
-              htmlFor='quantity'
-              className='mt-4 block font-lexend text-sm font-semibold text-main'
-            >
-              Jumlah Item
-            </label>
-            <input
-              id='quantity'
-              name='quantity'
-              type='number'
-              value={selectedItem?.quantity || 0}
-              onChange={handleChange}
-              className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
-            />
-
-            <label
-              htmlFor='shelf'
-              className='mt-4 block font-lexend text-sm font-semibold text-main'
-            >
-              Rak Item
-            </label>
-            <input
-              id='shelf'
-              name='shelf'
-              type='text'
-              value={selectedItem?.shelf || ''}
-              onChange={handleChange}
+              onChange={handleNameChange}
               className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
             />
 
             <div className='mt-6 flex justify-end'>
               <button
-                type='submit'
                 className='rounded-lg bg-main px-4 py-2 font-lexend font-medium text-white shadow hover:bg-secondary'
+                onClick={handleEdit}
               >
                 Edit
               </button>
