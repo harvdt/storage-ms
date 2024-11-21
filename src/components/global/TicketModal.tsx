@@ -87,7 +87,7 @@ const TicketModal: React.FC<TicketModalProps> = ({
                       ? 'bg-orange-100 text-orange-800'
                       : transaction.status === 'incomplete' ||
                           transaction.status === 'Incomplete'
-                        ? 'bg-slate-100 text-slate-800'
+                        ? 'bg-slate-700 text-slate-100'
                         : transaction.status === 'returned' ||
                             transaction.status === 'Returned'
                           ? 'bg-blue-100 text-blue-800'

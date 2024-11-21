@@ -100,6 +100,12 @@ export default function AdminTransactionsPage() {
     'PATCH',
   );
 
+  const { data: incompleteResponse, executeRequest: incompleteRequest } =
+    useFetch(
+      `http://localhost:8080/api/transaction/${selectedTransactionId}/incomplete`,
+      'PATCH',
+    );
+
   const { data: returnResponse, executeRequest: returnRequest } = useFetch(
     `http://localhost:8080/api/transaction/${selectedTransactionId}/returned`,
     'PATCH',
@@ -113,6 +119,8 @@ export default function AdminTransactionsPage() {
         rejectRequest();
       } else if (actionType === 'complete') {
         completeRequest();
+      } else if (actionType === 'incomplete') {
+        incompleteRequest();
       } else if (actionType === 'return') {
         returnRequest();
       }
@@ -123,6 +131,7 @@ export default function AdminTransactionsPage() {
     approveRequest,
     rejectRequest,
     completeRequest,
+    incompleteRequest,
     returnRequest,
   ]);
 
@@ -131,11 +140,18 @@ export default function AdminTransactionsPage() {
       approveResponse ||
       rejectResponse ||
       completeResponse ||
+      incompleteResponse ||
       returnResponse
     ) {
       window.location.reload();
     }
-  }, [approveResponse, rejectResponse, completeResponse, returnResponse]);
+  }, [
+    approveResponse,
+    rejectResponse,
+    completeResponse,
+    incompleteResponse,
+    returnResponse,
+  ]);
 
   const handleApproveClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
@@ -150,6 +166,11 @@ export default function AdminTransactionsPage() {
   const handleCompleteClick = (transactionId: string) => {
     setSelectedTransactionId(transactionId);
     setActionType('complete');
+  };
+
+  const handleIncompleteClick = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    setActionType('incomplete');
   };
 
   const handleReturnClick = (transactionId: string) => {
@@ -224,7 +245,7 @@ export default function AdminTransactionsPage() {
                       <TableCell className='py-2 text-center font-lexend font-medium'>
                         <span
                           className={cn(
-                            'rounded-full px-2 py-1 font-lexend text-xs font-medium',
+                            'rounded-full px-2 py-1 font-lexend text-sm font-medium',
                             transaction.status === 'pending' ||
                               transaction.status === 'Pending'
                               ? 'bg-yellow-100 text-yellow-800'
@@ -236,7 +257,7 @@ export default function AdminTransactionsPage() {
                                   ? 'bg-orange-100 text-orange-800'
                                   : transaction.status === 'incomplete' ||
                                       transaction.status === 'Incomplete'
-                                    ? 'bg-slate-100 text-slate-800'
+                                    ? 'bg-slate-700 text-slate-100'
                                     : transaction.status === 'returned' ||
                                         transaction.status === 'Returned'
                                       ? 'bg-blue-100 text-blue-800'
@@ -289,25 +310,27 @@ export default function AdminTransactionsPage() {
                               </button>
                               <button
                                 className='w-20 rounded bg-slate-600 px-1 py-1.5 font-lexend text-xs font-bold text-white transition duration-300 hover:bg-slate-700'
-                                // onClick={() =>
-                                //   handleCompleteClick(transaction.uuid)
-                                // }
+                                onClick={() =>
+                                  handleIncompleteClick(transaction.uuid)
+                                }
                               >
                                 Incomplete
                               </button>
                             </>
                           ) : transaction.transaction_type === 'loan' &&
                             transaction.status === 'completed' ? (
-                            <>
-                              <button
-                                className='w-20 rounded bg-blue-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-blue-700'
-                                onClick={() =>
-                                  handleReturnClick(transaction.uuid)
-                                }
-                              >
-                                Return
-                              </button>
-                            </>
+                            <button
+                              className='w-20 rounded bg-blue-600 px-3 py-1 font-lexend font-bold text-white transition duration-300 hover:bg-blue-700'
+                              onClick={() =>
+                                handleReturnClick(transaction.uuid)
+                              }
+                            >
+                              Return
+                            </button>
+                          ) : transaction.status === 'incomplete' ? (
+                            <div className='font-lexend font-bold text-slate-700'>
+                              INCOMPLETE
+                            </div>
                           ) : (
                             <div className='font-lexend font-bold text-orange-600'>
                               COMPLETED

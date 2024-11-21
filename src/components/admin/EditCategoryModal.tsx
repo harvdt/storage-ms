@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
 import { ImCancelCircle } from 'react-icons/im';
 
 import useFetch from '@/hooks/useFetch';
@@ -47,9 +48,14 @@ const EditCategoryModal = ({
         </div>
 
         <div className='mt-2 space-y-4'>
-          <p className='text-center font-lexend text-xl font-bold'>
-            {category.name}
-          </p>
+          <div className='flex items-center justify-between'>
+            <p className='font-lexend text-2xl font-bold'>{category.name}</p>
+
+            <FaTrashAlt
+              size={22}
+              className='cursor-pointer text-main hover:text-secondary'
+            />
+          </div>
 
           <form>
             <label

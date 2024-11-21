@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
 import { ImCancelCircle } from 'react-icons/im';
 
 import useFetch from '@/hooks/useFetch';
@@ -65,7 +66,7 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
         </div>
 
         <div className='mt-2 space-y-4'>
-          <p className='text-center font-lexend text-xl font-bold'>
+          <p className='text-center font-lexend text-2xl font-bold'>
             {category.name}
           </p>
 
@@ -76,18 +77,25 @@ const EditItemModal = ({ isOpen, onClose, categoryId }: EditItemModalProps) => {
             >
               Select Item
             </label>
-            <select
-              id='item-select'
-              value={selectedItem?.name || ''}
-              onChange={handleItemSelect}
-              className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
-            >
-              {category.items.map((item) => (
-                <option key={item.id} value={item.name}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            <div className='flex items-center justify-between gap-x-2'>
+              <select
+                id='item-select'
+                value={selectedItem?.name || ''}
+                onChange={handleItemSelect}
+                className='mt-1 block w-full rounded-md border-2 border-third p-2 font-lexend shadow-sm outline-none focus:border-main sm:text-sm'
+              >
+                {category.items.map((item) => (
+                  <option key={item.id} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+
+              <FaTrashAlt
+                size={32}
+                className='cursor-pointer text-main hover:text-secondary'
+              />
+            </div>
 
             <label
               htmlFor='name'
