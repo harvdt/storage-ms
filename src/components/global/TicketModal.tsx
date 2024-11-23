@@ -25,6 +25,10 @@ const TicketModal: React.FC<TicketModalProps> = ({
     `http://localhost:8080/api/category/${categoryId}`,
   );
 
+  const { data: storage } = useFetch<Storage>(
+    `http://localhost:8080/api/storage/${category?.storage_id}`,
+  );
+
   if (!isOpen || !transaction) return null;
 
   return (
@@ -97,6 +101,13 @@ const TicketModal: React.FC<TicketModalProps> = ({
             </span>
           </p>
 
+          <p>
+            <span className='font-semibold'>Tanggal Complete:</span>{' '}
+            {transaction?.completed_time === null
+              ? '-'
+              : transaction?.completed_time}
+          </p>
+
           {transaction.transaction_type === 'loan' && (
             <p>
               <span className='font-semibold'>Rencana Pengembalian:</span>{' '}
@@ -112,6 +123,10 @@ const TicketModal: React.FC<TicketModalProps> = ({
                 : formatDate(transaction.returned_time)}
             </p>
           ) : null}
+
+          <p>
+            <span className='font-semibold'>Storage Item:</span> {storage?.name}
+          </p>
 
           <p>
             <span className='font-semibold'>Kategori Item:</span>{' '}

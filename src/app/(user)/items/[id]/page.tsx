@@ -97,6 +97,15 @@ export default function UserItemPage({ params }: { params: { id: string } }) {
     }
   };
 
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+  const today = new Date();
+  const todayMessage = `Maksimal Pengambilan ${today.toLocaleDateString('id-ID', options)} Jam 16:00`;
+
   return (
     <main>
       <div className='relative mb-6 w-full rounded-lg px-20 py-16 shadow-lg'>
@@ -284,6 +293,10 @@ export default function UserItemPage({ params }: { params: { id: string } }) {
                     name='notes'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                   />
+                </div>
+
+                <div>
+                  <p>{todayMessage}</p>
                 </div>
 
                 {/* Action Buttons */}

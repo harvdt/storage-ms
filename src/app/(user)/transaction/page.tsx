@@ -29,6 +29,7 @@ const tableHeader = [
   'Divisi',
   'Jabatan',
   'Tanggal Pemesanan',
+  'Tanggal Complete',
   'Status',
   'Ticket',
 ];
@@ -147,6 +148,11 @@ export default function UserTransactionsPage() {
                       </TableCell>
                       <TableCell className='py-2 text-center font-lexend font-medium'>
                         {formatDate(transaction.time)}
+                      </TableCell>
+                      <TableCell className='py-2 text-center font-lexend font-medium'>
+                        {transaction.completed_time === null
+                          ? '-'
+                          : formatDate(transaction.completed_time)}
                       </TableCell>
                       <TableCell className='py-2 text-center font-lexend font-medium'>
                         <span

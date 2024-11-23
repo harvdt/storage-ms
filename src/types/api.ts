@@ -20,7 +20,7 @@ export type Error = {
 export type Category = {
   id: number;
   name: string;
-  storageId: number;
+  storage_id: number;
   storage: Storage;
   image: Uint8Array | string;
 };
@@ -28,7 +28,7 @@ export type Category = {
 export type CategoryWithItems = {
   id: number;
   name: string;
-  storageId: number;
+  storage_id: number;
   storage: Storage;
   items: Item[];
   image: Uint8Array | string;

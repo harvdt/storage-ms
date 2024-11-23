@@ -100,6 +100,15 @@ export default function AdminItemPage({ params }: { params: { id: number } }) {
     }
   };
 
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+  const today = new Date();
+  const todayMessage = `Maksimal Pengambilan ${today.toLocaleDateString('id-ID', options)} Jam 16:00`;
+
   const toggleEditItemModal = () => {
     setIsEditItemModalOpen(!isEditItemModalOpen);
   };
@@ -302,6 +311,10 @@ export default function AdminItemPage({ params }: { params: { id: number } }) {
                     name='notes'
                     className='w-full rounded-md bg-white p-2 text-main outline-none'
                   />
+                </div>
+
+                <div>
+                  <p>{todayMessage}</p>
                 </div>
 
                 {/* Action Buttons */}
