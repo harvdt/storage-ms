@@ -109,3 +109,12 @@ export type AddCategoryPayload = AddCategoryField & {
   image: File;
   storage_id: number;
 };
+
+export type LoginRequest = {
+  username: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  token: string;
+};
