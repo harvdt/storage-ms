@@ -105,7 +105,7 @@ const TicketModal: React.FC<TicketModalProps> = ({
             <span className='font-semibold'>Tanggal Complete:</span>{' '}
             {transaction?.completed_time === null
               ? '-'
-              : transaction?.completed_time}
+              : formatDate(transaction?.completed_time)}
           </p>
 
           {transaction.transaction_type === 'loan' && (
