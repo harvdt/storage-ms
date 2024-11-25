@@ -14,15 +14,13 @@ import { LoginRequest } from '@/types/api';
 const cookies = new Cookies();
 
 export default function LoginPage() {
-  const [payload, setPayload] = React.useState<LoginRequest | null>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
 
   const router = useRouter();
 
-  const { data: response } = useFetch<{ token: string }>(
+  const { data: response, executeRequest } = useFetch<{ token: string }>(
     'http://localhost:8080/api/admin/login',
     'POST',
-    payload,
   );
 
   React.useEffect(() => {
@@ -43,7 +41,7 @@ export default function LoginPage() {
     const formData = new FormData(formRef.current);
     const data = Object.fromEntries(formData.entries()) as LoginRequest;
 
-    setPayload(data);
+    await executeRequest(data);
   };
 
   return (
