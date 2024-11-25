@@ -27,7 +27,7 @@ export default function LoginPage() {
     if (response) {
       formRef.current?.reset();
 
-      cookies.set('@osms/token', response.token, { path: '/' });
+      cookies.set('osms-token', response.token, { path: '/' });
 
       router.push('/admin/home');
     }

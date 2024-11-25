@@ -46,7 +46,7 @@ const useFetch = <T>(
     error: null,
   });
 
-  const token = cookies.get('@osms/token');
+  const token = cookies.get('osms-token');
 
   const executeRequest = React.useCallback(
     async (body: any = initialBody, isFormData: boolean = false) => {
