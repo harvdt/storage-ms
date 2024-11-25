@@ -1,12 +1,58 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { FormEvent } from 'react';
 import { ImCancelCircle } from 'react-icons/im';
+import Cookies from 'universal-cookie';
 
 import { cn } from '@/lib/utils';
+import useFetch from '@/hooks/useFetch';
+
+import { LoginRequest } from '@/types/api';
+
+const cookies = new Cookies();
 
 export default function LoginPage() {
+  const [payload, setPayload] = React.useState<LoginRequest | null>(null);
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  const router = useRouter();
+
+  const { data: response } = useFetch<{ token: string }>(
+    'http://localhost:8080/api/admin/login',
+    'POST',
+    payload,
+  );
+
+  React.useEffect(() => {
+    if (response) {
+      formRef.current?.reset();
+
+      cookies.set('@osms/token', response.token, { path: '/' });
+
+      router.push('/admin/home');
+    }
+  }, [response, router]);
+
+  const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (!formRef.current) return;
+
+    const formData = new FormData(formRef.current);
+    const data = Object.fromEntries(formData.entries()) as LoginRequest;
+
+    setPayload(data);
+  };
+
   return (
     <main className='flex min-h-screen items-center justify-center'>
-      <div className='relative flex h-[32rem] w-[28rem] flex-col items-center rounded-xl bg-white'>
+      <form
+        ref={formRef}
+        onSubmit={(e) => e.preventDefault()}
+        className='relative flex h-[32rem] w-[28rem] flex-col items-center rounded-xl bg-white'
+      >
         <Link href='/'>
           <ImCancelCircle className='absolute left-7 top-6 cursor-pointer text-3xl text-main' />
         </Link>
@@ -40,39 +86,41 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className='mt-6 flex flex-col gap-y-4'>
+          <div className='mt-6 flex flex-col gap-y-4'>
             <div>
               <p className='font-lexend font-bold text-main'>Username:</p>
               <input
-                className='mt-2 h-8 w-64 rounded-md border-2 border-main pl-2 font-lexend text-sm font-semibold text-main placeholder-red-300 focus:border-secondary'
+                id='username'
+                name='username'
                 type='text'
                 placeholder='Input your username'
+                className='mt-2 h-8 w-64 rounded-md border-2 border-main pl-2 font-lexend text-sm font-semibold text-main placeholder-red-300 focus:border-secondary'
               />
             </div>
 
             <div>
               <p className='font-lexend font-bold text-main'>Password:</p>
               <input
-                className='mt-2 h-8 w-64 rounded-md border-2 border-main pl-2 font-lexend text-sm font-semibold text-main placeholder-red-300 focus:border-secondary'
+                id='password'
+                name='password'
                 type='password'
                 placeholder='Input your password'
+                className='mt-2 h-8 w-64 rounded-md border-2 border-main pl-2 font-lexend text-sm font-semibold text-main placeholder-red-300 focus:border-secondary'
               />
             </div>
-          </form>
+          </div>
         </div>
-
-        <Link href='/admin/home'>
-          <button
-            className={cn(
-              'mt-5 h-10 w-60 rounded-xl bg-gradient-to-r from-main to-secondary',
-              'font-lexend font-bold text-white',
-              '[box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
-            )}
-          >
-            Login
-          </button>
-        </Link>
-      </div>
+        <button
+          onClick={handleSubmit}
+          className={cn(
+            'mt-5 h-10 w-60 rounded-xl bg-gradient-to-r from-main to-secondary',
+            'font-lexend font-bold text-white',
+            '[box-shadow:_0px_4px_4px_rgb(0_0_0_/_0.50)]',
+          )}
+        >
+          Login
+        </button>
+      </form>
     </main>
   );
 }

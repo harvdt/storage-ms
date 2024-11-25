@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 type FetchMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -43,6 +46,8 @@ const useFetch = <T>(
     error: null,
   });
 
+  const token = cookies.get('@osms/token');
+
   const executeRequest = React.useCallback(
     async (body: any = initialBody, isFormData: boolean = false) => {
       dispatch({ type: 'LOADING' });
@@ -59,6 +64,12 @@ const useFetch = <T>(
         if (!isFormData) {
           options.headers = {
             'Content-Type': 'application/json',
+          };
+        }
+
+        if (token) {
+          options.headers = {
+            Authorization: `Bearer ${token}`,
           };
         }
 
@@ -80,7 +91,7 @@ const useFetch = <T>(
         dispatch({ type: 'ERROR', payload: errorObject });
       }
     },
-    [url, method, initialBody],
+    [initialBody, method, token, url],
   );
 
   React.useEffect(() => {
