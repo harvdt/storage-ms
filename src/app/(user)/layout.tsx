@@ -8,14 +8,15 @@ export default function UserLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className='bg-gradient-to-r from-secondary to-main'>
+      <body className='min-h-screen bg-gradient-to-r from-secondary to-main'>
         <TopBar />
-        <main className='mx-4 mt-8 flex justify-center gap-6'>
-          <div className='flex-[0.1]'>
-            <SideBar />
+        <main className='mx-4 mt-8'>
+          <div className='flex gap-6'>
+            <div className='w-40 flex-shrink-0'>
+              <SideBar />
+            </div>
+            <div className='min-w-0 flex-1'>{children}</div>
           </div>
-
-          <div className='flex-[0.9]'>{children}</div>
         </main>
       </body>
     </html>

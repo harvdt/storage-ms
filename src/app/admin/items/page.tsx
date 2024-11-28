@@ -59,7 +59,7 @@ export default function AdminItemsPage() {
     : [];
 
   return (
-    <main className='mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl'>
+    <main>
       {/* Header with Search and Filter */}
       <div className='flex items-center gap-4'>
         <SearchInput
