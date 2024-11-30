@@ -102,6 +102,11 @@ const TicketModal: React.FC<TicketModalProps> = ({
           </p>
 
           <p>
+            <span className='font-semibold'>Tanggal Pemesanan:</span>{' '}
+            {formatDate(transaction?.time)}
+          </p>
+
+          <p>
             <span className='font-semibold'>Tanggal Complete:</span>{' '}
             {transaction?.completed_time === null
               ? '-'
