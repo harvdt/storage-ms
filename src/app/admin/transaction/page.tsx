@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { MdOutlineFileDownload } from 'react-icons/md';
 
 import { capitalize, cn, formatDate } from '@/lib/utils';
 import useFetch from '@/hooks/useFetch';
@@ -178,6 +179,35 @@ export default function AdminTransactionsPage() {
     setActionType('return');
   };
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const downloadCSV = async (e: any) => {
+    e.preventDefault();
+    const response = await fetch(
+      `http://localhost:8080/api/transactions/export`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    const data = await response.blob();
+
+    const blob = new Blob([data], { type: 'csv' });
+
+    const a = document.createElement('a');
+    a.download = 'transactions.csv';
+    a.href = window.URL.createObjectURL(blob);
+    const clickEvt = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    a.dispatchEvent(clickEvt);
+    a.remove();
+  };
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+
   return (
     <main className='space-y-6'>
       <SearchInput
@@ -187,10 +217,20 @@ export default function AdminTransactionsPage() {
         containerStyles='w-full'
       />
 
-      <p className='font-lexend text-2xl font-semibold text-white'>
-        Pengambilan berlaku di hari yang sama dengan pemesanan serta di jam
-        kerja (08:00-16:00)
-      </p>
+      <div className='flex items-center justify-between'>
+        <p className='font-lexend text-2xl font-semibold text-white'>
+          Pengambilan berlaku di hari yang sama dengan pemesanan serta di jam
+          kerja (08:00-16:00)
+        </p>
+
+        <button
+          onClick={downloadCSV}
+          className='flex items-center gap-2 rounded-lg bg-red-800 px-4 py-2 font-lexend font-bold text-white shadow-light hover:bg-third hover:shadow-bold'
+        >
+          Download Transaction
+          <MdOutlineFileDownload size={24} />
+        </button>
+      </div>
 
       <div className='max-h-screen overflow-hidden rounded-lg bg-white shadow-lg'>
         {transactionsLoading ? (
