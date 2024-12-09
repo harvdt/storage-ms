@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { FormEvent } from 'react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
@@ -40,13 +41,14 @@ export default function UserItemPage({ params }: { params: { id: string } }) {
     'POST',
   );
 
-  // Reset & reload after send the data is success
+  const router = useRouter();
+
   React.useEffect(() => {
     if (response) {
       formRef.current?.reset();
-      window.location.reload();
+      router.push('/transaction');
     }
-  }, [response]);
+  }, [response, router]);
 
   if (!category) {
     return <div>Tidak ada kategori</div>;

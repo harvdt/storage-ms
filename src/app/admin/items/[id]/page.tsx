@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { FormEvent } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { IoMdArrowRoundBack } from 'react-icons/io';
@@ -43,13 +44,14 @@ export default function AdminItemPage({ params }: { params: { id: number } }) {
     'POST',
   );
 
-  // Reset & reload after send the data is success
+  const router = useRouter();
+
   React.useEffect(() => {
     if (response) {
       formRef.current?.reset();
-      window.location.reload();
+      router.push('/admin/transaction');
     }
-  }, [response]);
+  }, [response, router]);
 
   if (!category) {
     return <div>Tidak ada kategori</div>;
